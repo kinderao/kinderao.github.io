@@ -1,0 +1,42 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Kubernetes认证 · Hexo</title><meta name="description" content="Kubernetes认证 - John Doe"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Hexo"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/sunchongsheng" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/pinggod" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Kubernetes认证</h1><div class="post-info">Mar 28, 2017</div><div class="post-content"><h1 id="kubernetes认证"><a href="#kubernetes认证" class="headerlink" title="kubernetes认证"></a>kubernetes认证</h1><blockquote>
+<p>Kubernetes集群的操作可以通过apiserver来进行操作，kubectl命令最终也是调用的apiserver，如果想要获取对apiserver进行操作，需要先通过其认证</p>
+</blockquote>
+<p>api-server的认证方式：</p>
+<ul>
+<li><p>基本认证：basic-auth</p>
+<p>–basic-auth-file=/path/to/basic-auth.csv<br>在basic-auth.csv中拥有以列为单位的认证信息，格式为password，username，uid</p>
+<p><strong><em>示例：</em></strong></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">passwd，kinderao，1</div><div class="line">password2，test，2</div></pre></td></tr></table></figure>
+<p>  然后在 kube-apiserver启动的时候加上–basic-auth-file=/path/to/basic-auth.csv这个参数，启动起来过后再在使用k8s的api就需要加上认证信息，否则就会unauthorized，加认证信息的方法是在http请求的header中添加一个Authorization，value是Basic base64编码后的用户名密码信息</p>
+</li>
+<li><p>Token认证：token-auth<br> –token-auth-file=/path/to/token-auth.csv<br>在token-auth.csv中拥有以列为单位的认证信息，格式为token，username，uid</p>
+<p>  <strong><em>示例</em></strong></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">token,kinderao,1</div><div class="line">token2,kinderao2,2</div></pre></td></tr></table></figure>
+<p>  同样也是在apiserver的启动参数里面加入–token-auth-file=/path/to/token-auth.csv这个参数，然后在请求的时候同样在header中添加Authorization，value是Bearer token</p>
+</li>
+<li><p>CA证书认证：<br>在使用证书认证之前首先需要申请证书，证书可以通过权威CA来申请，也可以通过自签证书，不过部署kubernetes的大多数环境都是内网环境，所以更多的还是使用的是自签证书。<br>生成证书的步骤如下：</p>
+<ul>
+<li><p>首先需要你的linux系统上安装有openssl，大多数的linux发行版都带有这个工具，使用openssl生成根证书cacert：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 生成密钥</div><div class="line">openssl genrsa -out ca.key 2048</div><div class="line"># 生成根证书</div><div class="line">openssl req -x509 -nodes -key ca.key -subj &quot;/CN=yourcomany.com&quot; -days 5000 -out ca.crt</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>- 然后为server生成证书：
+
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># 生成server的密钥</div><div class="line">openssl genrsa -out server.key 2048</div><div class="line"># 生成证书申请，其中的hostname需要填入你的服务器的域名或者ip地址，这个地方有个坑</div><div class="line"># 就是在这填入的是什么地址，在client请求的时候就要使用这个地址，之前配的是ip，但是请求的时候使用主机名，导致一直没有出现bad certificate的问题</div><div class="line">openssl req -new -key server.key -subj &quot;/CN=`hostname`&quot; -out server.csr</div><div class="line"># 使用刚才生成的根证书以及密钥来生成server的证书</div><div class="line">openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 5000</div></pre></td></tr></table></figure>
+
+- 再为client生成证书：
+
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 生成client的密钥</div><div class="line">openssl genrsa -out client.key 2048</div><div class="line"># 生成证书申请，这里需要填的地址和上面的server一致即可</div><div class="line">openssl req -new -key client.key -subj &quot;/CN=`hostname`&quot; -out client.csr</div><div class="line"># 使用根证书和密钥来生成client的证书</div><div class="line">openssl x509 -req -in client.csr -CA ca.crt -CAcreateserial -out client.crt -days 5000</div></pre></td></tr></table></figure>
+</code></pre><ul>
+<li><p>配置api-server的启动参数<br> 在apiserver的启动参数中加上下面的启动参数</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">--secure-port=443 </div><div class="line">--client_ca_file=/root/genkey/ca.crt </div><div class="line">--tls-private-key-file=/root/genkey/server.key </div><div class="line">--tls-cert-file=/root/genkey/server.crt</div></pre></td></tr></table></figure>
+<p>  也可以放到/etc/kubernets/apiserver配置文件的args参数里面<br>  启动kube-apiserver会看见一下日志：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">      I0330 05:17:46.582385    4776 config.go:531] Will report 10.0.0.103 as public IP address.</div><div class="line">[restful] 2017/03/30 05:17:46 log.go:30: [restful/swagger] listing is available at https://10.0.0.103:443/swaggerapi/</div><div class="line">[restful] 2017/03/30 05:17:46 log.go:30: [restful/swagger] https://10.0.0.103:443/swaggerui/ is mapped to folder /swagger-ui/</div><div class="line">I0330 05:17:46.950556    4776 serve.go:104] Serving securely on 0.0.0.0:443</div><div class="line">I0330 05:17:46.950618    4776 serve.go:118] Serving insecurely on 127.0.0.1:8080</div></pre></td></tr></table></figure>
+<p>  我们在本机上使用curl来验证一下</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl https://hostname:443 --cacert ca.crt --key client.key --cert client.crt</div></pre></td></tr></table></figure>
+<p>  以后的请求都需要带有根证书和client key和client的证书</p>
+</li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2017/03/05/毕业前的目标及安排/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2017 <a href="http://yoursite.com">John Doe</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
