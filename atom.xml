@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-04-01T15:06:21.000Z</updated>
+  <updated>2017-04-02T11:58:27.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,55 +20,62 @@
     <link href="http://yoursite.com/2017/03/28/Kubernetes%E8%AE%A4%E8%AF%81/"/>
     <id>http://yoursite.com/2017/03/28/Kubernetes认证/</id>
     <published>2017-03-28T08:19:54.000Z</published>
-    <updated>2017-04-01T15:06:21.000Z</updated>
+    <updated>2017-04-02T11:58:27.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="kubernetes认证"><a href="#kubernetes认证" class="headerlink" title="kubernetes认证"></a>kubernetes认证</h1><blockquote>
 <p>Kubernetes集群的操作可以通过apiserver来进行操作，kubectl命令最终也是调用的apiserver，如果想要获取对apiserver进行操作，需要先通过其认证</p>
 </blockquote>
 <p>api-server的认证方式：</p>
 <ul>
-<li><p>基本认证：basic-auth</p>
-<p>–basic-auth-file=/path/to/basic-auth.csv<br>在basic-auth.csv中拥有以列为单位的认证信息，格式为password，username，uid</p>
-<p><strong><em>示例：</em></strong></p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">passwd，kinderao，1</div><div class="line">password2，test，2</div></pre></td></tr></table></figure>
-<p>  然后在 kube-apiserver启动的时候加上–basic-auth-file=/path/to/basic-auth.csv这个参数，启动起来过后再在使用k8s的api就需要加上认证信息，否则就会unauthorized，加认证信息的方法是在http请求的header中添加一个Authorization，value是Basic base64编码后的用户名密码信息</p>
+<li><h4 id="基本认证：basic-auth"><a href="#基本认证：basic-auth" class="headerlink" title="基本认证：basic-auth"></a>基本认证：basic-auth</h4><p>–basic-auth-file=/path/to/basic-auth.csv<br>在basic-auth.csv中拥有以列为单位的认证信息，格式为password，username，uid</p>
 </li>
-<li><p>Token认证：token-auth<br> –token-auth-file=/path/to/token-auth.csv<br>在token-auth.csv中拥有以列为单位的认证信息，格式为token，username，uid</p>
-<p>  <strong><em>示例</em></strong></p>
+</ul>
+<a id="more"></a>
+<p>  <strong><em>示例：</em></strong></p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">passwd，kinderao，1</div><div class="line">password2，test，2</div></pre></td></tr></table></figure>
+
+然后在 kube-apiserver启动的时候加上--basic-auth-file=/path/to/basic-auth.csv这个参数，启动起来过后再在使用k8s的api就需要加上认证信息，否则就会unauthorized，加认证信息的方法是在http请求的header中添加一个Authorization，value是Basic base64编码后的用户名密码信息
+</code></pre><ul>
+<li><h4 id="Token认证：token-auth"><a href="#Token认证：token-auth" class="headerlink" title="Token认证：token-auth"></a>Token认证：token-auth</h4><p> –token-auth-file=/path/to/token-auth.csv<br>在token-auth.csv中拥有以列为单位的认证信息，格式为token，username，uid</p>
+<p><strong><em>示例</em></strong></p>
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">token,kinderao,1</div><div class="line">token2,kinderao2,2</div></pre></td></tr></table></figure>
 <p>  同样也是在apiserver的启动参数里面加入–token-auth-file=/path/to/token-auth.csv这个参数，然后在请求的时候同样在header中添加Authorization，value是Bearer token</p>
 </li>
-<li><p>CA证书认证：<br>在使用证书认证之前首先需要申请证书，证书可以通过权威CA来申请，也可以通过自签证书，不过部署kubernetes的大多数环境都是内网环境，所以更多的还是使用的是自签证书。<br>生成证书的步骤如下：</p>
-<ul>
+<li><h4 id="CA证书认证："><a href="#CA证书认证：" class="headerlink" title="CA证书认证："></a>CA证书认证：</h4><p>在使用证书认证之前首先需要申请证书，证书可以通过权威CA来申请，也可以通过自签证书，不过部署kubernetes的大多数环境都是内网环境，所以更多的还是使用的是自签证书。<br>生成证书的步骤如下：</p>
+</li>
+</ul>
+<ol>
 <li><p>首先需要你的linux系统上安装有openssl，大多数的linux发行版都带有这个工具，使用openssl生成根证书cacert：</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 生成密钥</div><div class="line">openssl genrsa -out ca.key 2048</div><div class="line"># 生成根证书</div><div class="line">openssl req -x509 -nodes -key ca.key -subj &quot;/CN=yourcomany.com&quot; -days 5000 -out ca.crt</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 生成密钥</span></div><div class="line">openssl genrsa -out ca.key 2048</div><div class="line"><span class="comment"># 生成根证书</span></div><div class="line">openssl req -x509 -nodes -key ca.key -subj <span class="string">"/CN=yourcomany.com"</span> -days 5000 -out ca.crt</div></pre></td></tr></table></figure>
 </li>
-</ul>
+</ol>
+<ol>
+<li><p>为server生成证书：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 生成server的密钥</span></div><div class="line">openssl genrsa -out server.key 2048</div><div class="line"><span class="comment"># 生成证书申请，其中的hostname需要填入你的服务器的域名或者ip地址，这个地方有个坑</span></div><div class="line"><span class="comment"># 就是在这填入的是什么地址，在client请求的时候就要使用这个地址，之前配的是ip，但是请求的时候使用主机名，导致一直没有出现bad certificate的问题</span></div><div class="line">openssl req -new -key server.key -subj <span class="string">"/CN=`hostname`"</span> -out server.csr</div><div class="line"><span class="comment"># 使用刚才生成的根证书以及密钥来生成server的证书</span></div><div class="line">openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 5000</div></pre></td></tr></table></figure>
 </li>
-</ul>
-<pre><code>- 然后为server生成证书：
-
-    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># 生成server的密钥</div><div class="line">openssl genrsa -out server.key 2048</div><div class="line"># 生成证书申请，其中的hostname需要填入你的服务器的域名或者ip地址，这个地方有个坑</div><div class="line"># 就是在这填入的是什么地址，在client请求的时候就要使用这个地址，之前配的是ip，但是请求的时候使用主机名，导致一直没有出现bad certificate的问题</div><div class="line">openssl req -new -key server.key -subj &quot;/CN=`hostname`&quot; -out server.csr</div><div class="line"># 使用刚才生成的根证书以及密钥来生成server的证书</div><div class="line">openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 5000</div></pre></td></tr></table></figure>
-
-- 再为client生成证书：
-
-    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 生成client的密钥</div><div class="line">openssl genrsa -out client.key 2048</div><div class="line"># 生成证书申请，这里需要填的地址和上面的server一致即可</div><div class="line">openssl req -new -key client.key -subj &quot;/CN=`hostname`&quot; -out client.csr</div><div class="line"># 使用根证书和密钥来生成client的证书</div><div class="line">openssl x509 -req -in client.csr -CA ca.crt -CAcreateserial -out client.crt -days 5000</div></pre></td></tr></table></figure>
-</code></pre><ul>
-<li><p>配置api-server的启动参数<br> 在apiserver的启动参数中加上下面的启动参数</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">--secure-port=443 </div><div class="line">--client_ca_file=/root/genkey/ca.crt </div><div class="line">--tls-private-key-file=/root/genkey/server.key </div><div class="line">--tls-cert-file=/root/genkey/server.crt</div></pre></td></tr></table></figure>
-<p>  也可以放到/etc/kubernets/apiserver配置文件的args参数里面<br>  启动kube-apiserver会看见一下日志：</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">      I0330 05:17:46.582385    4776 config.go:531] Will report 10.0.0.103 as public IP address.</div><div class="line">[restful] 2017/03/30 05:17:46 log.go:30: [restful/swagger] listing is available at https://10.0.0.103:443/swaggerapi/</div><div class="line">[restful] 2017/03/30 05:17:46 log.go:30: [restful/swagger] https://10.0.0.103:443/swaggerui/ is mapped to folder /swagger-ui/</div><div class="line">I0330 05:17:46.950556    4776 serve.go:104] Serving securely on 0.0.0.0:443</div><div class="line">I0330 05:17:46.950618    4776 serve.go:118] Serving insecurely on 127.0.0.1:8080</div></pre></td></tr></table></figure>
-<p>  我们在本机上使用curl来验证一下</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl https://hostname:443 --cacert ca.crt --key client.key --cert client.crt</div></pre></td></tr></table></figure>
-<p>  以后的请求都需要带有根证书和client key和client的证书</p>
+<li><p>再为client生成证书:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 生成client的密钥</span></div><div class="line">openssl genrsa -out client.key 2048</div><div class="line"><span class="comment"># 生成证书申请，这里需要填的地址和上面的server一致即可</span></div><div class="line">openssl req -new -key client.key -subj <span class="string">"/CN=`hostname`"</span> -out client.csr</div><div class="line"><span class="comment"># 使用根证书和密钥来生成client的证书</span></div><div class="line">openssl x509 -req -in client.csr -CA ca.crt -CAcreateserial -out client.crt -days 5000</div></pre></td></tr></table></figure>
 </li>
-</ul>
+</ol>
+<ol>
+<li><p>配置api-server的启动参数,在apiserver的启动参数中加上下面的启动参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">  --secure-port=443 </div><div class="line">  --client_ca_file=/root/genkey/ca.crt </div><div class="line">  --tls-private-key-file=/root/genkey/server.key </div><div class="line">  --tls-cert-file=/root/genkey/server.crt</div><div class="line">  ```  </div><div class="line"></div><div class="line"></div><div class="line">也可以放到/etc/kubernets/apiserver配置文件的args参数里面    </div><div class="line">启动kube-apiserver会看见一下日志：</div><div class="line">      </div><div class="line">  </div><div class="line">`I0330 05:17:46.582385    4776 config.go:531] Will report 10.0.0.103 as public IP address.</div><div class="line">[restful] 2017/03/30 05:17:46 log.go:30: [restful/swagger] listing is available at https://10.0.0.103:443/swaggerapi/</div><div class="line">[restful] 2017/03/30 05:17:46 log.go:30: [restful/swagger] https://10.0.0.103:443/swaggerui/ is mapped to folder /swagger-ui/</div><div class="line">I0330 05:17:46.950556    4776 serve.go:104] Serving securely on 0.0.0.0:443</div><div class="line">I0330 05:17:46.950618    4776 serve.go:118] Serving insecurely on 127.0.0.1:8080`</div><div class="line"></div><div class="line"></div><div class="line">我们在本机上使用curl来验证一下:</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>curl <a href="https://hostname:443" target="_blank" rel="external">https://hostname:443</a> –cacert ca.crt –key client.key –cert client.crt<br>```</p>
+<p>以后的请求都需要带有根证书和client key和client的证书</p>
 ]]></content>
     
     <summary type="html">
     
       &lt;h1 id=&quot;kubernetes认证&quot;&gt;&lt;a href=&quot;#kubernetes认证&quot; class=&quot;headerlink&quot; title=&quot;kubernetes认证&quot;&gt;&lt;/a&gt;kubernetes认证&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;Kubernetes集群的操作可以
+&lt;p&gt;Kubernetes集群的操作可以通过apiserver来进行操作，kubectl命令最终也是调用的apiserver，如果想要获取对apiserver进行操作，需要先通过其认证&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;api-server的认证方式：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;h4 id=&quot;基本认证：basic-auth&quot;&gt;&lt;a href=&quot;#基本认证：basic-auth&quot; class=&quot;headerlink&quot; title=&quot;基本认证：basic-auth&quot;&gt;&lt;/a&gt;基本认证：basic-auth&lt;/h4&gt;&lt;p&gt;–basic-auth-file=/path/to/basic-auth.csv&lt;br&gt;在basic-auth.csv中拥有以列为单位的认证信息，格式为password，username，uid&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
     
     </summary>
     
@@ -80,12 +87,13 @@
     <link href="http://yoursite.com/2017/03/05/%E6%AF%95%E4%B8%9A%E5%89%8D%E7%9A%84%E7%9B%AE%E6%A0%87%E5%8F%8A%E5%AE%89%E6%8E%92/"/>
     <id>http://yoursite.com/2017/03/05/毕业前的目标及安排/</id>
     <published>2017-03-05T01:57:57.000Z</published>
-    <updated>2017-03-05T02:01:27.000Z</updated>
+    <updated>2017-04-03T11:30:32.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>时光荏苒，我已不再是还可以在大学校园里可以半夜上网到2点，第二天一觉睡到中午，点个外卖，吃了就去球馆打球的大学生了，还有四个月，就要彻底离开大学校园，虽然已经离校实习了将近8个多月，但是真正要毕业和未毕业还是差距挺大的。废话太多了，进入正题吧</p>
 </blockquote>
 <p>去年7月开始实习，做安卓开发，主要的技术栈也是Java。做了4个月的安卓开发，也独立开发出了一款国家电网内部使用的app，算是大学中第一个稍微拿的出手的作品，不过从代码的质量上来讲，那款App实在是菜的不能再菜了，后面在一位学姐的的介绍下进入另外一家公司，从事docker方面的一家创业型小公司，我也又开始做后台开发，其实之前<code>JavaWeb</code>的基础还是停留在<code>servlet，jsp</code>顶多能看得懂点<code>struts，hibernate，spring</code>的地步。进入公司后短时间内还是了解以及学习到了很多的新东西，有的是之前听过的，有的是之前根本没有听过的。<code>spring boot，vuejs，docker，k8s，spring cloud，微服务架构</code>还有很多项目开发中用到的工具<code>gitlab，jira</code>等等，对于我这种认知还是停留在jsp的人来说，接收到了很多的新东西（其实慢慢的也发现很多很新潮的东西、技术，其实归根结底还是那些最基础的东西：数据结构，数据库原理这些东西），在这个公司已经4个月了，但是长进好像并没有想象中的那么快，也可能是我太着急了。所以做下总结，已经对下一阶段的安排</p>
+<a id="more"></a>
 <h3 id="首先"><a href="#首先" class="headerlink" title="首先"></a>首先</h3><p>毕业设计是个最重要的问题，从今天开始就要着手开始做毕业设计了，我准备使用Python来开发一款web系统，选用Python是因为我认为Python是一个程序员都应该学会的语言，你可以没事用它来爬爬别人网站的东西，也可以做些稀奇古怪的小玩意儿，对爱折腾的我来说简直太有诱惑力了，之前在折腾Linux没时间，趁着做毕业设计，刚好可以学下Python，随便把毕业设计给做了。准备使用Python的flask框架作为后端，然后vuejs做前端。先把技术给定下来，至于做什么，我是想做个商城系统，但是考虑到时间问题，到时候不一定能做完。所以目前先把Python学会再说吧。</p>
 <ul>
 <li>今天3月5号，在15号之前把Python基础学完以及把Flask的用法基本了解。</li>
@@ -120,7 +128,56 @@
     <summary type="html">
     
       &lt;blockquote&gt;
-&lt;p&gt;时光荏苒，我已不再是还可以在大学校园里可以半夜上网到2点，第二天一觉睡到中午，点个外卖，吃了就去球馆打球的大学生了，还有四个月，就要彻底离开大学校园，虽然已经离校实习了将近8个多月，但是真正要毕业和未毕业还是差距挺大的。废话太多了，进入正题吧&lt;/p
+&lt;p&gt;时光荏苒，我已不再是还可以在大学校园里可以半夜上网到2点，第二天一觉睡到中午，点个外卖，吃了就去球馆打球的大学生了，还有四个月，就要彻底离开大学校园，虽然已经离校实习了将近8个多月，但是真正要毕业和未毕业还是差距挺大的。废话太多了，进入正题吧&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;去年7月开始实习，做安卓开发，主要的技术栈也是Java。做了4个月的安卓开发，也独立开发出了一款国家电网内部使用的app，算是大学中第一个稍微拿的出手的作品，不过从代码的质量上来讲，那款App实在是菜的不能再菜了，后面在一位学姐的的介绍下进入另外一家公司，从事docker方面的一家创业型小公司，我也又开始做后台开发，其实之前&lt;code&gt;JavaWeb&lt;/code&gt;的基础还是停留在&lt;code&gt;servlet，jsp&lt;/code&gt;顶多能看得懂点&lt;code&gt;struts，hibernate，spring&lt;/code&gt;的地步。进入公司后短时间内还是了解以及学习到了很多的新东西，有的是之前听过的，有的是之前根本没有听过的。&lt;code&gt;spring boot，vuejs，docker，k8s，spring cloud，微服务架构&lt;/code&gt;还有很多项目开发中用到的工具&lt;code&gt;gitlab，jira&lt;/code&gt;等等，对于我这种认知还是停留在jsp的人来说，接收到了很多的新东西（其实慢慢的也发现很多很新潮的东西、技术，其实归根结底还是那些最基础的东西：数据结构，数据库原理这些东西），在这个公司已经4个月了，但是长进好像并没有想象中的那么快，也可能是我太着急了。所以做下总结，已经对下一阶段的安排&lt;/p&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>百度云全速下载教程---Aria2</title>
+    <link href="http://yoursite.com/2017/03/01/%E7%99%BE%E5%BA%A6%E4%BA%91%E5%85%A8%E9%80%9F%E4%B8%8B%E8%BD%BD---Aria2/"/>
+    <id>http://yoursite.com/2017/03/01/百度云全速下载---Aria2/</id>
+    <published>2017-02-28T16:00:00.000Z</published>
+    <updated>2017-04-03T12:20:15.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>###百度云全速下载教程</p>
+<blockquote>
+<p>不知道各位平时有没有使用百度云下载但是被百度元下载时的限速气的不行的体验，今天就是在这里教大家如何科学的使用aria2来下载百度云的资源</p>
+</blockquote>
+<p>Aria2是一个轻量级的下载工具，支持http，https，ftp，sftp，bittorrent，metalink等多种协议，能够在windows，linux，macos甚至是Android上面运行。<br>Aria2有两种下载模式：</p>
+<a id="more"></a>
+<ul>
+<li><p>一种为命令行下载模式(cli) </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">aria2c http://example.com/download/link  //aria2c 加上下载链接地址就可以实现下载</div></pre></td></tr></table></figure>
+</li>
+<li><p>一种为远程调用(rpc server)</p>
+</li>
+</ul>
+<p>前者上手需要一定的能力，后者更为方便一些，可以理解rpc模式相当于aria2在我们的本机上以后台的形式跑了起来，然后它可以一直监听指定的端口号，一旦需要下载东西就可以调用这个“后台”的api实现下载。当然现在aria2只是以”后台程序”的方式跑起来，还需要一个工具来调用这个后台程序的api，这个“前台程序”就是YAAW，我们可以使用YAAW来轻松实现下载。</p>
+<p>YAAW有三种使用方式：</p>
+<ul>
+<li>chrome的插件 <a href="https://chrome.google.com/webstore/detail/yaaw-for-chrome/dennnbdlpgjgbcjfgaohdahloollfgoc" target="_blank" rel="external">下载地址</a></li>
+<li>也有基于webkit的客户端 <a href="https://github.com/yangshun1029/aria2gui/releases/download/1.2.9/Aria2GUI-v1.2.9.zip" target="_blank" rel="external">下载地址</a>  <a href="https://github.com/yangshun1029/aria2gui" target="_blank" rel="external">github项目详情页</a></li>
+<li>还可以使用在线网页版的<a href="http://binux.github.io/yaaw/demo/" target="_blank" rel="external">YAAW</a>  or <a href="http://ziahamza.github.io/webui-aria2/" target="_blank" rel="external">webUI</a></li>
+</ul>
+<p>上述的三种方式其实都只是对Aria2的一个界面管理而已，最终的下载功能还是通过Aria2来实现。<br>Aria2的启动还需要一个配置文件来启动，我把配置文件的内容贴出来，大家粘贴到一个aria2.conf的文件中保存起来</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">#用户名</div><div class="line">#rpc-user=user</div><div class="line">#密码</div><div class="line">#rpc-passwd=passwd</div><div class="line">#上面的认证方式不建议使用,建议使用下面的token方式</div><div class="line">#设置加密的密钥</div><div class="line">#rpc-secret=token</div><div class="line">#允许rpc</div><div class="line">enable-rpc=true</div><div class="line">#允许所有来源, web界面跨域权限需要</div><div class="line">rpc-allow-origin-all=true</div><div class="line">#允许外部访问，false的话只监听本地端口</div><div class="line">rpc-listen-all=true</div><div class="line">#RPC端口, 仅当默认端口被占用时修改</div><div class="line">#rpc-listen-port=6800</div><div class="line">#最大同时下载数(任务数), 路由建议值: 3</div><div class="line">max-concurrent-downloads=5</div><div class="line">#断点续传</div><div class="line">continue=true</div><div class="line">#同服务器连接数</div><div class="line">max-connection-per-server=5</div><div class="line">#最小文件分片大小, 下载线程数上限取决于能分出多少片, 对于小文件重要</div><div class="line">min-split-size=10M</div><div class="line">#单文件最大线程数, 路由建议值: 5</div><div class="line">split=10</div><div class="line">#下载速度限制</div><div class="line">max-overall-download-limit=0</div><div class="line">#单文件速度限制</div><div class="line">max-download-limit=0</div><div class="line">#上传速度限制</div><div class="line">max-overall-upload-limit=0</div><div class="line">#单文件速度限制</div><div class="line">max-upload-limit=0</div><div class="line">#断开速度过慢的连接</div><div class="line">#lowest-speed-limit=0</div><div class="line">#验证用，需要1.16.1之后的release版本</div><div class="line">#referer=*</div><div class="line">#文件保存路径, 默认为当前启动位置</div><div class="line">dir=/home/acgotaku/Downloads</div><div class="line">#文件缓存, 使用内置的文件缓存, 如果你不相信Linux内核文件缓存和磁盘内置缓存时使用, 需要1.16及以上版本</div><div class="line">#disk-cache=0</div><div class="line">#另一种Linux文件缓存方式, 使用前确保您使用的内核支持此选项, 需要1.15及以上版本(?)</div><div class="line">#enable-mmap=true</div><div class="line">#文件预分配, 能有效降低文件碎片, 提高磁盘性能. 缺点是预分配时间较长</div><div class="line">#所需时间 none &lt; falloc ? trunc &lt;&lt; prealloc, falloc和trunc需要文件系统和内核支持</div><div class="line">file-allocation=prealloc</div></pre></td></tr></table></figure>
+<p>我们可以现在可以使用命令将Aria2启动起来：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">aria2 --conf-path=&lt;path&gt;  //path 就是配置文件存放的路径，需要是绝对路径</div></pre></td></tr></table></figure></p>
+<p>启动后可以看到Aria2在监听着6800端口</p>
+<p>未完，待续。。。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;###百度云全速下载教程&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;不知道各位平时有没有使用百度云下载但是被百度元下载时的限速气的不行的体验，今天就是在这里教大家如何科学的使用aria2来下载百度云的资源&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Aria2是一个轻量级的下载工具，支持http，https，ftp，sftp，bittorrent，metalink等多种协议，能够在windows，linux，macos甚至是Android上面运行。&lt;br&gt;Aria2有两种下载模式：&lt;/p&gt;
     
     </summary>
     
@@ -132,7 +189,7 @@
     <link href="http://yoursite.com/2017/02/25/%20%E4%BD%BF%E7%94%A8GitHub%E4%B8%8Ehexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
     <id>http://yoursite.com/2017/02/25/ 使用GitHub与hexo搭建个人博客/</id>
     <published>2017-02-25T08:41:08.000Z</published>
-    <updated>2017-02-27T01:42:42.000Z</updated>
+    <updated>2017-04-03T11:30:35.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>对于程序员来说，写博客是一个好的习惯，今天给大家介绍一下怎么使用<code>github</code>和<code>hexo</code>来搭建一个博客。</p>
@@ -141,7 +198,8 @@
 <ol>
 <li>显得比较有geek范儿，跟是用来csdn等博客平台相比，需要一定的动手与折腾能力</li>
 <li>和其他的博客平台相比，可以自己完全控制现实的内容，哪的样式不好看，不喜欢，直接动手改css样式即可，和其他的博客平台满是广告和有点丑爆的界面相比，有一种自己掌控全局的感觉，而不是将自己的东西交给别人托管</li>
-<li>写博客来说毕竟还是要稳定比较好，虽然说自己也可以写一个博客系统或者使用WordPress来搭建一个博客，但是东西放在云服务器上万一哪天忘了续费，或者服务器挂了数据丢失那不是太可惜了。而github博客是把博客内容全放在github上面，至少不会担心数据稳定性的问题。而且借助于git在什么地方，换台电脑使用git 将博客pull下来就能接着写。</li>
+<li>写博客来说毕竟还是要稳定比较好，虽然说自己也可以写一个博客系统或者使用WordPress来搭建一个博客，但是东西放在云服务器上万一哪天忘了续费，或者服务器挂了数据丢失那不是太可惜了。而github博客是把博客内容全放在github上面，至少不会担心数据稳定性的问题。而且借助于git在什么地方，换台电脑使用git 将博客pull下来就能接着写。<a id="more"></a>
+</li>
 </ol>
 <hr>
 <p>废话有点多，现在开始吧:</p>
@@ -187,7 +245,11 @@
       &lt;blockquote&gt;
 &lt;p&gt;对于程序员来说，写博客是一个好的习惯，今天给大家介绍一下怎么使用&lt;code&gt;github&lt;/code&gt;和&lt;code&gt;hexo&lt;/code&gt;来搭建一个博客。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;使用github的page服务来搭建博客有几个好处
+&lt;p&gt;使用github的page服务来搭建博客有几个好处：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;显得比较有geek范儿，跟是用来csdn等博客平台相比，需要一定的动手与折腾能力&lt;/li&gt;
+&lt;li&gt;和其他的博客平台相比，可以自己完全控制现实的内容，哪的样式不好看，不喜欢，直接动手改css样式即可，和其他的博客平台满是广告和有点丑爆的界面相比，有一种自己掌控全局的感觉，而不是将自己的东西交给别人托管&lt;/li&gt;
+&lt;li&gt;写博客来说毕竟还是要稳定比较好，虽然说自己也可以写一个博客系统或者使用WordPress来搭建一个博客，但是东西放在云服务器上万一哪天忘了续费，或者服务器挂了数据丢失那不是太可惜了。而github博客是把博客内容全放在github上面，至少不会担心数据稳定性的问题。而且借助于git在什么地方，换台电脑使用git 将博客pull下来就能接着写。
     
     </summary>
     
@@ -195,25 +257,138 @@
   </entry>
   
   <entry>
-    <title>test</title>
-    <link href="http://yoursite.com/2017/02/25/2017-02-25-test/"/>
-    <id>http://yoursite.com/2017/02/25/2017-02-25-test/</id>
-    <published>2017-02-25T08:34:50.000Z</published>
-    <updated>2017-02-25T08:37:46.000Z</updated>
+    <title>Jenkins使用及插件开发介绍</title>
+    <link href="http://yoursite.com/2017/01/02/Jenkins%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91%E4%BB%8B%E7%BB%8D/"/>
+    <id>http://yoursite.com/2017/01/02/Jenkins使用及插件开发介绍/</id>
+    <published>2017-01-01T16:00:00.000Z</published>
+    <updated>2017-04-03T12:20:44.000Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="test"><a href="#test" class="headerlink" title="test"></a>test</h3><blockquote>
-<p>hahahah</p>
+    <content type="html"><![CDATA[<h3 id="Jenkins使用及插件开发介绍"><a href="#Jenkins使用及插件开发介绍" class="headerlink" title="Jenkins使用及插件开发介绍"></a>Jenkins使用及插件开发介绍</h3><h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>Jenkins是一个广泛用于<a href="">持续构建</a>的可视化web工具，就是各种项目的的“自动化”编译、打包、分发部署，将以前编译、打包、上传、部署到Tomcat中的过程交由Jenkins，Jenkins通过给定的代码地址，将代码拉取到jenkins宿主机上，进行编译、打包和发布到web容器中。Jenkins可以支持多种语言（比如：java、c#、php等等），也兼容ant、maven、gradle等多种第三方构建工具，同时跟git、svn无缝集成，也支持直接与github直接集成。</p>
+<blockquote>
+<p>WiseBuild也是基于jenkins进行的开发，在下面会看到很多和WiseBuild相似的地方</p>
 </blockquote>
-<p>this is my first post </p>
-<p><img src="http://ok8j2fjtv.bkt.clouddn.com/AdEmm" alt="Untitled Image"></p>
-<p><img src="http://ok8j2fjtv.bkt.clouddn.com/ZBBd3" alt="Untitled Image"></p>
-<p><img src="http://ok8j2fjtv.bkt.clouddn.com/1w0R4" alt="Untitled Image"></p>
-<p><img src="http://ok8j2fjtv.bkt.clouddn.com/RRR1R" alt="Untitled Image"></p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><ol>
+<li>到jenkins官网<a href="http://jenkins.io/下载war包" target="_blank" rel="external">http://jenkins.io/下载war包</a></li>
+</ol>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -jar jenkins.war</div></pre></td></tr></table></figure>
+<p><code>或者</code>将war放到web容器中，启动web容器</p>
+<p>启动war包，会自动将war包解压到～/.jenkins目录下，并且生成一些目录和配置文件，我们在jenkins中配置的job也会保存到这个目录下<br>打开浏览器，输入<a href="localhost:8080" target="_blank" rel="external">localhost:8080</a> 就可以访问到jenkins的web界面了<br><img src="http://ok8j2fjtv.bkt.clouddn.com/oNWFi" alt="Untitled Image"></p>
+<h5 id="新建项目"><a href="#新建项目" class="headerlink" title="新建项目"></a>新建项目</h5><blockquote>
+<p>用个小例子简单示范一下jenkins的使用<br> <img src="http://ok8j2fjtv.bkt.clouddn.com/GRjGo" alt="Untitled Image"></p>
+<h5 id="源码配置"><a href="#源码配置" class="headerlink" title="源码配置"></a>源码配置</h5><p> 将源码信息配置上去，我选择一个github上面的项目，如果源码管理中没有git这个选项，只需要到系统管理中添加git这个插件即可<br><img src="http://ok8j2fjtv.bkt.clouddn.com/Dugpr" alt="Untitled Image"></p>
+<h5 id="构建命令"><a href="#构建命令" class="headerlink" title="构建命令"></a>构建命令</h5><p><img src="http://ok8j2fjtv.bkt.clouddn.com/M65Zn" alt="Untitled Image"></p>
+</blockquote>
+<p>在构建阶段输入以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> <span class="variable">$&#123;WORKSPACE&#125;</span> &amp;&amp; ./gradlew build &amp;&amp; mv <span class="variable">$&#123;WORKSPACE&#125;</span>/docker/jpetstore.war /usr/<span class="built_in">local</span>/tomcat9/webapps</div></pre></td></tr></table></figure>
+<p>该命令分为三个部分：</p>
+<ol>
+<li><code>cd ${WORKSPACE}</code> WORKSPACE是jenkins的定义的环境变量，代表该项目对应的文件路径，该项目检出的源码也是该目录。类似的环境变量还有BUILD_NUMBER,   BUILD_ID, JOB_NAME,  JENKINS_HOME等等</li>
+<li><code>./gradlew build</code>使用gradle 执行构建命令，将检出的源码编译打包为war包，这里我们使用的构建工具是gradle，如果是使用maven，可以<code>mvn clean package</code></li>
+<li><code>mv {WORKSPACE}/docker/jpestore.war  /usr/local/tomcat9/webapps/</code><br>将打包好的war包手动放到tomcat的webapps目录下，以便Tomcat能启动该项目了</li>
+</ol>
+<p>最后，点击<strong>保存</strong>回到主面板上。</p>
+<h5 id="构建"><a href="#构建" class="headerlink" title="构建"></a>构建</h5><p>点击右边的立即构建<br><img src="http://ok8j2fjtv.bkt.clouddn.com/G6RA3" alt="Untitled Image"><br>开始执行<strong>构建</strong>，可以看见构建的进度，旁边的#12 就是本次构建的<strong>构建号</strong>(BUILD_NUMBER)<br><img src="http://ok8j2fjtv.bkt.clouddn.com/RPbjJ" alt="Untitled Image"><br>也可以在查看console output<br><img src="http://ok8j2fjtv.bkt.clouddn.com/U80hC" alt="Untitled Image"><br>console output 会显示出本次构建的一些日志信息<br><img src="http://ok8j2fjtv.bkt.clouddn.com/Ioyab" alt="Untitled Image"><br>这里我们web容器和jenkins都是在同一台服务器上，可以利用shell命令来进行手动部署，如果jenkins的宿主机和web服务器不是同一台，我们也可以利用gradle和maven的部署功能，例如使用mvn deploy来将项目部署到远程服务器上<br>到此，我们的一个持续集成的一个项目就已经搭建好了，现在一旦我们对代码修改进行提交，然后jenkins就会获取最新的代码然后按照我们上面配置的命令进行构建和部署。</p>
+<hr>
+<h4 id="jenkins插件"><a href="#jenkins插件" class="headerlink" title="jenkins插件"></a>jenkins插件</h4><p>在前面我们看见jenkins可以支持git, svn, maven等很多功能，这些都是Jenkins的插件，jenkins本身不提供很多功能，我们可以通过使用插件来满足我们的使用，接下来就介绍一下插件的原理以及我们怎么通过写一个自己的插件来满足我们的需求。</p>
+<h5 id="扩展点"><a href="#扩展点" class="headerlink" title="扩展点"></a>扩展点</h5><p>但是jenkins有很多的<strong>扩展点</strong>（<strong>ExtensitonPoint</strong>），它是Jenkins系统的某个方面的接口或抽象类。这些接口定义了需要实现的方法，而Jenkins插件需要实现这些方法，也可以叫做在此扩展点之上进行扩展Jenkins。有关扩展点的详细信息，请参阅<a href="https://wiki.jenkins-ci.org/display/JENKINS/Extension+points" target="_blank" rel="external">Jenkins 官方ExtentionPoints文档</a>。通过这些扩展点我们可以写插件来实现自己的需求。<br>下面是一些常用的扩展点：</p>
+<ul>
+<li><strong>Scm</strong> ：代表源码管理的一个步骤，如下面的Git，Subversion就是扩展的Scm<br><img src="http://ok8j2fjtv.bkt.clouddn.com/fHa2c" alt="Untitled Image"></li>
+<li><strong>Builder</strong> ： 代表构建的一个步骤，如下图中在构建过程中，我们可以增加一个构建步骤，而每一个选项都是对应一个Builder，在每一个Builder中都有自己不同的功能。如Execute shell，这就是一个ShellBuilder，意味着在构建过程中会执行一个shell命令<br><img src="http://ok8j2fjtv.bkt.clouddn.com/yBwAc" alt="Untitled Image"></li>
+<li><p><strong>Trigger</strong>：代表一个构建的触发，当满足一个什么样的条件时触发这个项目开始构建。比较常用的触发就是当代码变更时触发，如果我们需要实现一些比较复杂的触发逻辑，就需要扩展Trigger这个扩展点<br><img src="http://ok8j2fjtv.bkt.clouddn.com/tycGO" alt="Untitled Image"></p>
+</li>
+<li><p><strong>Publisher</strong>：Publisher代表一个项目构建完成后需要执行的步骤，如选项中的E-Mail Notifaction就是一个Publisher插件，选择这个选项后，当项目构建完成，就会使用email来通知用户，假如想要在项目构建完成后将构建目标产物发送到服务器上，则可以扩展此扩展点。<br><img src="http://ok8j2fjtv.bkt.clouddn.com/M83Gv" alt="Untitled Image"></p>
+</li>
+</ul>
+<p>上面简单描述了一下插件和扩展点，接着我们可以搭建一个插件的开发环境</p>
+<p>#####插件开发环境搭建<br>首先需要安装：</p>
+<ol>
+<li>maven3</li>
+<li>jdk6+</li>
+</ol>
+<p>安装完成后，修改maven目录下的settings.xml文件</p>
+<ul>
+<li>linux : <code>～/.m2/settings.xml</code></li>
+<li>windows : <code>%USERPROFILE%\.m2\setttings.xml</code><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">settings</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">pluginGroups</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">pluginGroup</span>&gt;</span>org.jenkins-ci.tools<span class="tag">&lt;/<span class="name">pluginGroup</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">pluginGroups</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">profiles</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!-- Give access to Jenkins plugins --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">profile</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">id</span>&gt;</span>jenkins<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">activation</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">activeByDefault</span>&gt;</span>true<span class="tag">&lt;/<span class="name">activeByDefault</span>&gt;</span> <span class="comment">&lt;!-- change this to false, if you don't like to have it on per default --&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">activation</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">repositories</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">repository</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">id</span>&gt;</span>repo.jenkins-ci.org<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://repo.jenkins-ci.org/public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">repository</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">repositories</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">pluginRepositories</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">pluginRepository</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">id</span>&gt;</span>repo.jenkins-ci.org<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://repo.jenkins-ci.org/public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">pluginRepository</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">pluginRepositories</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">profile</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">profiles</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">mirrors</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">id</span>&gt;</span>repo.jenkins-ci.org<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://repo.jenkins-ci.org/public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>m.g.o-public<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">mirrors</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">settings</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>使用如下命令创建一个新的插件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn org.jenkins-ci.tools:maven-hpi-plugin:create （或者 mvn hpi:create）</div></pre></td></tr></table></figure></p>
+<p>需要输入插件的groupId，artifactId, 然后会在当前目录创建一个jenkins插件的骨架目录（熟悉maven的同学知道这个一个标准的maven项目目录结构）<br><img src="http://ok8j2fjtv.bkt.clouddn.com/QfbCw" alt="Untitled Image"><br>插件<strong>目录结构</strong>:</p>
+<ul>
+<li><strong>pom.xml：</strong> maven使用这个文件来构建插件，所有的插件都是基于Plugin Parent Pom</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.jenkins-ci.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></div></pre></td></tr></table></figure>
+<ul>
+<li><strong>src/main/java：</strong>java源码</li>
+<li><strong>src/main/resources：</strong>jelly视图文件，用于在web界面上显示</li>
+<li><strong>src/main/webapp：</strong> 静态的资源文件，例如图片和html文件</li>
+</ul>
+<p>导入到IDE </p>
+<ul>
+<li><strong>intellij idea：</strong>直接在ide中导入pom文件就能导入</li>
+<li><strong>eclipse：</strong>运行如下命令<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn -DdownloadSources=<span class="literal">true</span> -DdownloadJavadocs=<span class="literal">true</span> -DoutputDirectory=target/eclipse-classes -Declipse.workspace=/path/to/workspace eclipse:eclipse eclipse:configure-workspace</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>调试插件</strong></p>
+<ul>
+<li><p>linux</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> MAVEN_OPTS=<span class="string">"-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000,suspend=n"</span></div><div class="line">mvn hpi:run</div></pre></td></tr></table></figure>
+</li>
+<li><p>windows</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">set</span> MAVEN_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000,<span class="built_in">suspend</span>=n</div><div class="line">mvn hpi:run</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>输入命令过后可以打开浏览器，输入：<a href="http://localhost:8080/jenkins" target="_blank" rel="external">http://localhost:8080/jenkins</a>,就可以看见你的插件在jenkins中运行起来了，现在就可以开始进行调试了。</p>
+<p><strong>修改端口</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn hpi:run -Djetty.port =8090</div></pre></td></tr></table></figure></p>
+<p><strong>设置上下文路径</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn hpi:run -Dhpi.prefix=/jenkins</div></pre></td></tr></table></figure></p>
+<p><strong>打包发布插件</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn package</div></pre></td></tr></table></figure></p>
+<p>该命令会在target目录创建出 ‘插件名称’.hpi 文件，其他用户可以直接将这个插件上传安装到Jenkins中使用（或者放到$JENKINS_HOME/plugins目录中）。</p>
+<hr>
+<h5 id="Jenkins插件之HelloWorld"><a href="#Jenkins插件之HelloWorld" class="headerlink" title="Jenkins插件之HelloWorld"></a>Jenkins插件之HelloWorld</h5><blockquote>
+<p>在之前我们使用<code>mvn hpi:create</code>创建插件目录时，Jenkins在我们的项目中生成了一个HelloWorldBuilder的插件，这是一个官方示例，下面带大家分析一下这个插件的示例源码</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldBuilder</span> <span class="keyword">extends</span> <span class="title">Builder</span> <span class="keyword">implements</span> <span class="title">SimpleBuildStep</span> </span>&#123;</div><div class="line">	</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>首先创建一个类继承于Builder，代表使用这个插件是一个构建插件（如果继承于Scm，代表这个插件是一个源码插件，例如Git，Svn插件），然后实现SimpleBuildStep接口</p>
+<p>在Jenkins的插件中，每一个插件类中都必须要有一个Descriptor内部静态类，它代表一个类的’描述者‘，用于指明这是一个扩展点的实现，Jenkins是通过这个描述者才能知道我们自己写的插件<br>每一个‘描述者’静态类都需要被@Extension注解，Jenkins内部会扫描@Extenstion注解来知道注册了有哪些插件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Extension</span></div><div class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">DescriptorImpl</span> <span class="keyword">extends</span> <span class="title">BuildStepDescriptor</span>&lt;<span class="title">Builder</span>&gt; </span>&#123;</div><div class="line">  </div><div class="line">	<span class="keyword">private</span> <span class="keyword">boolean</span> useFrench;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">DescriptorImpl</span><span class="params">()</span> </span>&#123;</div><div class="line">           load();</div><div class="line">       &#125;</div><div class="line">   </div><div class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isApplicable</span><span class="params">(Class&lt;? extends AbstractProject&gt; aClass)</span> </span>&#123;</div><div class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       <span class="function"><span class="keyword">public</span> String <span class="title">getDisplayName</span><span class="params">()</span> </span>&#123;</div><div class="line">           <span class="keyword">return</span> <span class="string">"Say hello world"</span>;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       <span class="meta">@Override</span></div><div class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">configure</span><span class="params">(StaplerRequest req, JSONObject formData)</span> <span class="keyword">throws</span> FormException </span>&#123;</div><div class="line">           save();</div><div class="line">           <span class="keyword">return</span> <span class="keyword">super</span>.configure(req,formData);</div><div class="line">       &#125;</div><div class="line">       </div><div class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">getUseFrench</span><span class="params">()</span> </span>&#123;</div><div class="line">           <span class="keyword">return</span> useFrench;</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>在Desciptor类中有两个方法需要我们必须要进行重写</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isApplicable</span><span class="params">()</span></span>&#123;</div><div class="line">	 <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个方法的返回值代表这个Builder在Project中是否可用，我们可以将我们的逻辑写在其中，例如判断一些参数，最后返回true或者false来决定这个Builder在此处是否可用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getDisplayName</span><span class="params">()</span></span>&#123;</div><div class="line">	<span class="keyword">return</span> <span class="string">"Say hello world"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个方法返回的是一个String类型的值，这个名称会用在web界面上显示的名称<br><img src="http://ok8j2fjtv.bkt.clouddn.com/Ydti0" alt="Untitled Image"></p>
+<p>如果我们在插件中需要获取一些系统设置参数，我们可以在Descriptor中获取<br>一个参数对应Descriptor中的一个属性，其中的userFrench属性是一个全局配置，可以在系统设置里面看到这个属性<br><img src="http://ok8j2fjtv.bkt.clouddn.com/It4j4" alt="Untitled Image"><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> useFrench;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">DescriptorImpl</span><span class="params">()</span> </span>&#123;</div><div class="line">     load();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在Descirptor构造函数中使用<code>load()</code>进行加载全局配置，然后我们就可以在插件中获取到配置信息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">configure</span><span class="params">(StaplerRequest req, JSONObject formData)</span> <span class="keyword">throws</span> FormException </span>&#123;</div><div class="line">     useFrench = formData.getBoolean(<span class="string">"useFrench"</span>);</div><div class="line">     save();</div><div class="line">     <span class="keyword">return</span> <span class="keyword">super</span>.configure(req,formData);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>当在全局配置修改属性后，需要在<code>configure()</code>方法中调用<code>save()</code>将全局配置信息持久化到xml，我们可以在workspace的插件名.xml中看到持久化的数据<br><img src="http://ok8j2fjtv.bkt.clouddn.com/JgoMe" alt="Untitled Image"><br>在每个插件的<code>perform()</code>方法中，是perform真正开始执行的地方，我们如果要在插件中完成什么事，代码逻辑也是写在perform方法中，perform方法参数中build代表当前构建，workspace代表当前工作目录，通过workspace可以获取到当前工作目录的信息，并可以做些操作，如<code>workspace.copyTo(&quot;/home&quot;)</code>，launcher代表启动进程，可以通过launcher执行一些命令，如<code>launcher.launch().stdout(listener).cmds(&quot;pwd&quot;).start();</code>，listener代表一个监听器，可以将运行的内容信息通过listener输出到前台console output。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldBuilder</span> <span class="keyword">extends</span> <span class="title">Builder</span> <span class="keyword">implements</span> <span class="title">SimpleBuildStep</span> </span>&#123;</div><div class="line">	 <span class="meta">@Override</span></div><div class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">(Run&lt;?,?&gt; build, FilePath workspace, Launcher launcher, TaskListener listener)</span> </span>&#123;</div><div class="line">	      <span class="comment">//yuor code...</span></div><div class="line">	      listener.getLogger().println(<span class="string">"Hello World"</span> + name);</div><div class="line">	 &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>如上面的代码所示，在perform方法中我们通过listener打印了一行”Hello World“ + name，name是一个变量，这个变量的值从哪里来下面我会介绍一下给大家。在web界面上的控制台可以看见 Hello World kinder，而kinder这个值是由我们自己定义的。<br><img src="http://ok8j2fjtv.bkt.clouddn.com/Ge62B" alt="Untitled Image"><br>在jenkins插件中，如果我们需要一些自定义的参数信息，如构建时执行一些命令，命令的内容是由用户输入，这个时候需要一个变量来记录用户输入的信息<br>所以在HelloWorkdBuilder中定义一个属性与用于输入的信息相对应，如上面的name属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldBuilder</span> <span class="keyword">extends</span> <span class="title">Builder</span> <span class="keyword">implements</span> <span class="title">SimpleBuildStep</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String name;</div><div class="line">    </div><div class="line">    ....</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> <img src="http://ok8j2fjtv.bkt.clouddn.com/Ln8h2" alt="Untitled Image"><br>这个属性的值是在job的配置过程中输入，由Jenkins从web前端界面传递过来的值，我们还需要在HelloWorldBuilder的构造方法中进行参数的注入</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldBuilder</span> <span class="keyword">extends</span> <span class="title">Builder</span> <span class="keyword">implements</span> <span class="title">SimpleBuildStep</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">private</span> <span class="keyword">final</span> String name;</div><div class="line">	</div><div class="line">	<span class="meta">@DataBoundConstructor</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">HelloWorldBuilder</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">	    <span class="keyword">this</span>.name = name;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>类似于Spring的依赖注入，在这里Jenkins要求进行参数注入的构造方法需要用<code>@DataBoundConstructor</code>注解标注，以便Jenkins可以找到这个构造函数，并且调用这个构造函数，将web界面上配置的参数传递进HelloWorldBuilder，这样就可以在HelloWorldBuilder中使用这个属性了。</p>
+<p>到此，这个插件的后台代码就已经搞定了，现在给大家讲讲怎么样编写这个前端配置的视图<br><img src="http://ok8j2fjtv.bkt.clouddn.com/Ln8h2" alt="Untitled Image">。</p>
+<h5 id="Jenkins中的视图"><a href="#Jenkins中的视图" class="headerlink" title="Jenkins中的视图"></a>Jenkins中的视图</h5><p>Jenkins 使用<strong>jelly</strong>来编写视图，Jelly 是一种基于 <code>Java</code> 技术和 <code>XML</code> 的脚本编制和处理引擎。Jelly 的特点是有许多基于 JSTL (JSP 标准标记库，JSP Standard Tag Library）、Ant、Velocity 及其它众多工具的可执行标记。Jelly 还支持 Jexl（Java 表达式语言，Java Expression Language），Jexl 是 JSTL 表达式语言的扩展版本。Jenkins的界面绘制就是通过Jelly实现的</p>
+<p><strong>在Jenkins 中的视图的类型有三种</strong></p>
+<ul>
+<li><p><strong>global.jelly</strong> 全局的配置视图  </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;?jelly escape-by-default='true'?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">j:jelly</span> <span class="attr">xmlns:j</span>=<span class="string">"jelly:core"</span> <span class="attr">xmlns:st</span>=<span class="string">"jelly:stapler"</span> <span class="attr">xmlns:d</span>=<span class="string">"jelly:define"</span> <span class="attr">xmlns:l</span>=<span class="string">"/lib/layout"</span> <span class="attr">xmlns:t</span>=<span class="string">"/lib/hudson"</span> <span class="attr">xmlns:f</span>=<span class="string">"/lib/form"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">f:section</span> <span class="attr">title</span>=<span class="string">"Hello World Builder"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">f:entry</span> <span class="attr">title</span>=<span class="string">"French"</span> <span class="attr">field</span>=<span class="string">"useFrench"</span></span></div><div class="line">      <span class="attr">description</span>=<span class="string">"Check if we should say hello in French"</span>&gt;</div><div class="line">      <span class="tag">&lt;<span class="name">f:checkbox</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">f:entry</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">f:section</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">j:jelly</span>&gt;</span></div></pre></td></tr></table></figure>
+<p><img src="http://ok8j2fjtv.bkt.clouddn.com/NnVZB" alt="Untitled Image"></p>
+</li>
+<li><strong>config.jelly</strong>  Job的配置视图<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;?jelly escape-by-default='true'?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">j:jelly</span> <span class="attr">xmlns:j</span>=<span class="string">"jelly:core"</span> <span class="attr">xmlns:st</span>=<span class="string">"jelly:stapler"</span> <span class="attr">xmlns:d</span>=<span class="string">"jelly:define"</span> <span class="attr">xmlns:l</span>=<span class="string">"/lib/layout"</span> <span class="attr">xmlns:t</span>=<span class="string">"/lib/hudson"</span> <span class="attr">xmlns:f</span>=<span class="string">"/lib/form"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">f:entry</span> <span class="attr">title</span>=<span class="string">"Name"</span> <span class="attr">field</span>=<span class="string">"name"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">f:textbox</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">f:entry</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">j:jelly</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ok8j2fjtv.bkt.clouddn.com/XwiWE" alt="Untitled Image"><br>在定义一个属性时，使用<code>&lt;f:entry&gt;</code>标签代表这是一个属性，其中<code>title</code>是指在界面上显示的字段名，而<code>field</code>是指这个属性在HelloWorldBuilder中对应的属性名，jenkins通过这个名称来与HelloWorldBuilder中的属性相对应，从而使用<code>@DataBoundConstructor</code>标注的构造函数将这些变量注入到HelloWorldBuilder类中。</p>
+<ul>
+<li><strong>help-属性名.html</strong>     帮助视图 html片段</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></div><div class="line">  Help file for fields are discovered through a file name convention. This file is</div><div class="line">  help for the "name" field. You can have <span class="tag">&lt;<span class="name">i</span>&gt;</span>arbitrary<span class="tag">&lt;/<span class="name">i</span>&gt;</span> HTML here. You can write</div><div class="line">  this file as a Jelly script if you need a dynamic content (but if you do so, change</div><div class="line">  the extension to <span class="tag">&lt;<span class="name">tt</span>&gt;</span>.jelly<span class="tag">&lt;/<span class="name">tt</span>&gt;</span>).</div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<p><img src="http://ok8j2fjtv.bkt.clouddn.com/aB8jc" alt="Untitled Image"><br>这是Jenkins 中的三种视图，上面也介绍了两个简单的控件textbox和checkbox的使用，更多的关于Jelly的视图使用可以查看<a href="http://commons.apache.org/proper/commons-jelly/index.html" target="_blank" rel="external">jelly官网</a>。</p>
+<h5 id="Jenkins-数据持久化"><a href="#Jenkins-数据持久化" class="headerlink" title="Jenkins 数据持久化"></a>Jenkins 数据持久化</h5><p>我们之前在web界面上输入了name，这个信息在下一次构建的时候仍然存在，说明jenkins中需要使用数据持久化来将我们配置的信息保存下来，而Jenkins 使用文件来存储数据（所有数据都存储在$JENKINS_HOME），有些数据，比如 console 输出，会作为文本文件存储；大多数的结构数据，如一个项目的配置或构建（build）记录信息则会通过 XStream 持久化为一个xml文件,如下图所示<br><img src="http://ok8j2fjtv.bkt.clouddn.com/bvwfg" alt="Untitled Image"></p>
+<p>而在需要信息的时候，jenkins又从xml文件中读取到相应的数据，返回给应用程序。</p>
+<hr>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>在本文，主要介绍了Jenkins的简单使用，以及Jenkins的插件开发环境，以及Jenkins插件结构的一些介绍。本文主要还是做一个简单入门介绍，如果想要了解更多的关于Jenkins的东西，还是需要去看Jenkins的<a href="https://wiki.jenkins-ci.org/display/JENKINS/Extend+Jenkins" target="_blank" rel="external">官方wiki</a>， 上面有详细的关于每个扩展点已经Jenkins的api的使用介绍，同样，你也可以下载Jenkins的源码来查看内部的一些实现方式。<br>在<a href="https://github.com/jenkinsci" target="_blank" rel="external">Github Jenkinci</a>也有很多的关于Jenkins插件的源码，我们可以通过源码了解一些扩展点是怎样使用，参照别人的源码来写出自己的插件。</p>
 ]]></content>
     
     <summary type="html">
     
-      this is for test apollp theme
+      &lt;h3 id=&quot;Jenkins使用及插件开发介绍&quot;&gt;&lt;a href=&quot;#Jenkins使用及插件开发介绍&quot; class=&quot;headerlink&quot; title=&quot;Jenkins使用及插件开发介绍&quot;&gt;&lt;/a&gt;Jenkins使用及插件开发介绍&lt;/h3&gt;&lt;h4 id=&quot;介绍&quot;&gt;&lt;a hr
     
     </summary>
     
@@ -221,26 +396,68 @@
   </entry>
   
   <entry>
-    <title>Hello World</title>
-    <link href="http://yoursite.com/2017/02/25/hello-world/"/>
-    <id>http://yoursite.com/2017/02/25/hello-world/</id>
-    <published>2017-02-25T08:05:37.000Z</published>
-    <updated>2017-02-25T08:05:37.000Z</updated>
+    <title>Android导入jar和so文件（高德地图配置心得）</title>
+    <link href="http://yoursite.com/2016/10/22/Android%E9%AB%98%E5%BE%B7%E5%9C%B0%E5%9B%BE%E9%85%8D%E7%BD%AE%E5%BF%83%E5%BE%97/"/>
+    <id>http://yoursite.com/2016/10/22/Android高德地图配置心得/</id>
+    <published>2016-10-21T16:00:00.000Z</published>
+    <updated>2017-04-03T11:52:05.000Z</updated>
     
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+    <content type="html"><![CDATA[<blockquote>
+<p>最近在项目需要使用地图，学习了一下高德sdk的使用，在配置的过程中遇到了一些问题，记录下来。</p>
+</blockquote>
+<h4 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h4><p>高德地图sdk配置的时候需要导入so文件，由于导入的时候一直没有导入成功，所以一直报<strong><em>No implementation found for long com.autonavi.amap.mapcore.MapCore</em></strong>错误，后面google一下，成功解决了这个问题</p>
+<p>项目中所使用到的高德地图sdk主要分为两个 <strong>定位sdk</strong>　和 <strong>地图sdk</strong> ，<strong>定位sdk</strong>的配置比较简单，直接将jar导入即可。下面简单说下导入jar的步骤吧</p>
+<h4 id="导入jar包的步骤"><a href="#导入jar包的步骤" class="headerlink" title="导入jar包的步骤"></a>导入jar包的步骤</h4><ol>
+<li>将需要导入的jar直接拷贝到app目录下的libs目录中。</li>
+<li>然后再app 的build.gradle中添加依赖即可<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">        compile &apos;com.android.support:support-v4:19.1.0&apos;</div><div class="line">        compile files(&apos;libs/libammsdk.jar&apos;)</div><div class="line">        compile files(&apos;libs/universal-image-loader-1.8.6-with-sources.jar&apos;)</div><div class="line">       compile files(&apos;libs/YoumiSdk_v5.00_2015-01-08.jar&apos;)</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<a id="more"></a>
+<p>或者是打开project structure，添加依赖<br><img src="http://ok8j2fjtv.bkt.clouddn.com/l2P51" alt="Untitled Image"></p>
+<p>配置完后重新build一下就行了</p>
+<h4 id="导入so文件的步骤"><a href="#导入so文件的步骤" class="headerlink" title="导入so文件的步骤"></a>导入so文件的步骤</h4><ol>
+<li>将so文件拷贝到app的libs目录中</li>
+<li>然后再app build.gradle中的android标签下添加sourceSets设置<br>完整的builde.gradle示例如下：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">apply plugin: &apos;com.android.application&apos;</div><div class="line"></div><div class="line">android &#123;</div><div class="line">    compileSdkVersion 23</div><div class="line">    buildToolsVersion &quot;23.0.3&quot;</div><div class="line"></div><div class="line">    defaultConfig &#123;</div><div class="line">        applicationId &quot;cn.smile.demo&quot;</div><div class="line">        minSdkVersion 14</div><div class="line">        targetSdkVersion 23</div><div class="line">        versionCode 1</div><div class="line">        versionName &quot;1.0&quot;</div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            minifyEnabled false</div><div class="line">            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    //重要的是设置下源目录</div><div class="line">    sourceSets &#123;</div><div class="line">        main &#123;</div><div class="line">            jniLibs.srcDirs = [&apos;libs&apos;]//将so文件目录指向libs目录</div><div class="line">        &#125;</div><div class="line">    &#125;    </div><div class="line">&#125;</div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">    compile fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])</div><div class="line">    testCompile &apos;junit:junit:4.12&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>现在重新build一下，so文件就成功的导入到了项目中来。</p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+      &lt;blockquote&gt;
+&lt;p&gt;最近在项目需要使用地图，学习了一下高德sdk的使用，在配置的过程中遇到了一些问题，记录下来。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;遇到的问题&quot;&gt;&lt;a href=&quot;#遇到的问题&quot; class=&quot;headerlink&quot; title=&quot;遇到的问题&quot;&gt;&lt;/a&gt;遇到的问题&lt;/h4&gt;&lt;p&gt;高德地图sdk配置的时候需要导入so文件，由于导入的时候一直没有导入成功，所以一直报&lt;strong&gt;&lt;em&gt;No implementation found for long com.autonavi.amap.mapcore.MapCore&lt;/em&gt;&lt;/strong&gt;错误，后面google一下，成功解决了这个问题&lt;/p&gt;
+&lt;p&gt;项目中所使用到的高德地图sdk主要分为两个 &lt;strong&gt;定位sdk&lt;/strong&gt;　和 &lt;strong&gt;地图sdk&lt;/strong&gt; ，&lt;strong&gt;定位sdk&lt;/strong&gt;的配置比较简单，直接将jar导入即可。下面简单说下导入jar的步骤吧&lt;/p&gt;
+&lt;h4 id=&quot;导入jar包的步骤&quot;&gt;&lt;a href=&quot;#导入jar包的步骤&quot; class=&quot;headerlink&quot; title=&quot;导入jar包的步骤&quot;&gt;&lt;/a&gt;导入jar包的步骤&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;将需要导入的jar直接拷贝到app目录下的libs目录中。&lt;/li&gt;
+&lt;li&gt;然后再app 的build.gradle中添加依赖即可&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;dependencies &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        compile &amp;apos;com.android.support:support-v4:19.1.0&amp;apos;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        compile files(&amp;apos;libs/libammsdk.jar&amp;apos;)&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        compile files(&amp;apos;libs/universal-image-loader-1.8.6-with-sources.jar&amp;apos;)&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;       compile files(&amp;apos;libs/YoumiSdk_v5.00_2015-01-08.jar&amp;apos;)&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#125;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Java是传值还是传引用</title>
+    <link href="http://yoursite.com/2016/09/22/Java%E6%98%AF%E4%BC%A0%E5%80%BC%E8%BF%98%E6%98%AF%E4%BC%A0%E5%BC%95%E7%94%A8/"/>
+    <id>http://yoursite.com/2016/09/22/Java是传值还是传引用/</id>
+    <published>2016-09-21T16:00:00.000Z</published>
+    <updated>2017-04-03T11:53:22.000Z</updated>
+    
+    <content type="html"><![CDATA[<h5 id="要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别"><a href="#要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别" class="headerlink" title="要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别"></a>要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> num = <span class="number">10</span>;</div><div class="line">String str = <span class="string">"hello world"</span>;</div><div class="line">Person p = <span class="keyword">new</span> Person();</div></pre></td></tr></table></figure>
+<p>其中num为基本数据类型，而str 和 p 就是引用类型，基本数据类型值就存储在变量中，而引用类型，变量中保存的是实际对象的地址，所以成这种类型为引用类型。引用指向实际地址，而实际地址保存着实际的内容。有点像C语言中的指针。</p>
+<a id="more"></a>
+<h5 id="然后还要搞懂赋值运算符-“-”的作用"><a href="#然后还要搞懂赋值运算符-“-”的作用" class="headerlink" title="然后还要搞懂赋值运算符 “=”的作用"></a>然后还要搞懂赋值运算符 “=”的作用</h5><p>对于基本类型num，赋值运算符会直接改变变量中的值<br>而对于引用类型str 和 p，赋值运算符只是会改变其指向的地址，原来的地址被覆盖掉，<strong>但是原来的对象不改变，只不过不被现在的这个变量所引用了</strong></p>
+<h3 id="参数传递就是一次赋值操作"><a href="#参数传递就是一次赋值操作" class="headerlink" title="参数传递就是一次赋值操作"></a>参数传递就是一次赋值操作</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">第一个例子：基本类型</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</div><div class="line">    value = <span class="number">100</span>; </div><div class="line">&#125; </div><div class="line">foo(num); <span class="comment">// num 没有被改变 </span></div><div class="line"></div><div class="line">第二个例子：没有提供改变自身方法的引用类型 </div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(String text)</span> </span>&#123;</div><div class="line">   text = <span class="string">"windows"</span>; </div><div class="line">&#125;</div><div class="line">foo(str); <span class="comment">// str 也没有被改变 </span></div><div class="line"></div><div class="line">第三个例子：提供了改变自身方法的引用类型 </div><div class="line">StringBuilder sb = <span class="keyword">new</span> StringBuilder(<span class="string">"iphone"</span>);</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(StringBuilder builder)</span></span>&#123;</div><div class="line">   builder.append(<span class="string">"4"</span>); </div><div class="line">&#125; </div><div class="line">foo(sb); <span class="comment">// sb 被改变了，变成了"iphone4"。</span></div><div class="line"></div><div class="line">第四个例子：提供了改变自身方法的引用类型，但是不使用，而是使用赋值运算符。</div><div class="line">StringBuilder sb = <span class="keyword">new</span> StringBuilder(<span class="string">"iphone"</span>);</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(StringBuilder builder)</span> </span>&#123;</div><div class="line">    builder = <span class="keyword">new</span> StringBuilder(<span class="string">"ipad"</span>); </div><div class="line">&#125;</div><div class="line">foo(sb); <span class="comment">// sb 没有被改变，还是 "iphone"。</span></div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h5 id=&quot;要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别&quot;&gt;&lt;a href=&quot;#要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别&quot; class=&quot;headerlink&quot; title=&quot;要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别&quot;&gt;&lt;/a&gt;要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别&lt;/h5&gt;&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; num = &lt;span class=&quot;number&quot;&gt;10&lt;/span&gt;;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;String str = &lt;span class=&quot;string&quot;&gt;&quot;hello world&quot;&lt;/span&gt;;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;Person p = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; Person();&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;其中num为基本数据类型，而str 和 p 就是引用类型，基本数据类型值就存储在变量中，而引用类型，变量中保存的是实际对象的地址，所以成这种类型为引用类型。引用指向实际地址，而实际地址保存着实际的内容。有点像C语言中的指针。&lt;/p&gt;
     
     </summary>
     

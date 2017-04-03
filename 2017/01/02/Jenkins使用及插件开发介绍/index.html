@@ -3,18 +3,46 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hexo</title>
+  <title>jenkins使用及插件开发介绍 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   
   
   
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="Jenkins使用及插件开发介绍介绍Jenkins是一个广泛用于持续构建的可视化web工具，就是各种项目的的“自动化”编译、打包、分发部署，将以前编译、打包、上传、部署到Tomcat中的过程交由Jenkins，Jenkins通过给定的代码地址，将代码拉取到jenkins宿主机上，进行编译、打包和发布到web容器中。Jenkins可以支持多种语言（比如：java、c#、php等等），也兼容ant、m">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jenkins使用及插件开发介绍">
+<meta property="og:url" content="http://yoursite.com/2017/01/02/Jenkins使用及插件开发介绍/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Jenkins使用及插件开发介绍介绍Jenkins是一个广泛用于持续构建的可视化web工具，就是各种项目的的“自动化”编译、打包、分发部署，将以前编译、打包、上传、部署到Tomcat中的过程交由Jenkins，Jenkins通过给定的代码地址，将代码拉取到jenkins宿主机上，进行编译、打包和发布到web容器中。Jenkins可以支持多种语言（比如：java、c#、php等等），也兼容ant、m">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/oNWFi">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/GRjGo">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/Dugpr">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/M65Zn">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/G6RA3">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/RPbjJ">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/U80hC">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/Ioyab">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/fHa2c">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/yBwAc">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/tycGO">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/M83Gv">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/QfbCw">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/Ydti0">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/It4j4">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/JgoMe">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/Ge62B">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/Ln8h2">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/Ln8h2">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/NnVZB">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/XwiWE">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/aB8jc">
+<meta property="og:image" content="http://ok8j2fjtv.bkt.clouddn.com/bvwfg">
+<meta property="og:updated_time" content="2017-04-03T12:20:44.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="Jenkins使用及插件开发介绍">
+<meta name="twitter:description" content="Jenkins使用及插件开发介绍介绍Jenkins是一个广泛用于持续构建的可视化web工具，就是各种项目的的“自动化”编译、打包、分发部署，将以前编译、打包、上传、部署到Tomcat中的过程交由Jenkins，Jenkins通过给定的代码地址，将代码拉取到jenkins宿主机上，进行编译、打包和发布到web容器中。Jenkins可以支持多种语言（比如：java、c#、php等等），也兼容ant、m">
+<meta name="twitter:image" content="http://ok8j2fjtv.bkt.clouddn.com/oNWFi">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -39,7 +67,7 @@
   <link rel="stylesheet" href="/css/bootstrap.css" >
 
   
-    <link rel="stylesheet" href="/css/home.css" >
+    <link rel="stylesheet" href="/css/dialog.css">
   
 
   
@@ -52,7 +80,7 @@
 
 
 
-  <body>
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
 
 
   
@@ -75,7 +103,7 @@
             
               <a class="brand" style="
                  margin-top: 0px;"  
-                 >
+                href="#" data-toggle="modal" data-target="#myModal" >
                   <img width="124px" height="124px" alt="Hike News" src="/css/images/mylogo.jpg">
               </a>
             
@@ -144,224 +172,15 @@
             
       <div id="content" class="outer">
         
-          <section id="main" style="float:none;">
-  
-    <article id="post-Kubernetes认证"  class="article article-type-post" itemscope itemprop="blogPost" >
+          <section id="main" style="float:none;"><article id="post-Jenkins使用及插件开发介绍" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="article-inner">
     
     
       <header class="article-header">
         
   
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2017/03/28/Kubernetes认证/">Kubernetes认证</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      
-	<a href="/2017/03/28/Kubernetes认证/" class="article-date">
-	  <time datetime="2017-03-28T08:19:54.000Z" itemprop="datePublished">2017-03-28</time>
-	</a>
-
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="kubernetes认证"><a href="#kubernetes认证" class="headerlink" title="kubernetes认证"></a>kubernetes认证</h1><blockquote>
-<p>Kubernetes集群的操作可以通过apiserver来进行操作，kubectl命令最终也是调用的apiserver，如果想要获取对apiserver进行操作，需要先通过其认证</p>
-</blockquote>
-<p>api-server的认证方式：</p>
-<ul>
-<li><h4 id="基本认证：basic-auth"><a href="#基本认证：basic-auth" class="headerlink" title="基本认证：basic-auth"></a>基本认证：basic-auth</h4><p>–basic-auth-file=/path/to/basic-auth.csv<br>在basic-auth.csv中拥有以列为单位的认证信息，格式为password，username，uid</p>
-</li>
-</ul>
-        <!-- kubernetes认证
-Kubernetes集群的操作可以通过apiserver来进行操作，kubectl命令最终也是调用的apiserver，如果想要获取对apiserver进行操作，需要先通过其认证
-
-api-server的认证方式：
-
-基本认证：basic-auth–basic-auth-file=/path/to/basic-auth.csv在basic-auth.csv中拥有以列......  -->
-        <p class="article-more-link">
-          <a href="/2017/03/28/Kubernetes认证/#more">Read More</a>
-        </p>
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-<!-- Table of Contents -->
-
-  
-    <article id="post-毕业前的目标及安排"  class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2017/03/05/毕业前的目标及安排/">毕业前的目标以及安排</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      
-	<a href="/2017/03/05/毕业前的目标及安排/" class="article-date">
-	  <time datetime="2017-03-05T01:57:57.000Z" itemprop="datePublished">2017-03-05</time>
-	</a>
-
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>时光荏苒，我已不再是还可以在大学校园里可以半夜上网到2点，第二天一觉睡到中午，点个外卖，吃了就去球馆打球的大学生了，还有四个月，就要彻底离开大学校园，虽然已经离校实习了将近8个多月，但是真正要毕业和未毕业还是差距挺大的。废话太多了，进入正题吧</p>
-</blockquote>
-<p>去年7月开始实习，做安卓开发，主要的技术栈也是Java。做了4个月的安卓开发，也独立开发出了一款国家电网内部使用的app，算是大学中第一个稍微拿的出手的作品，不过从代码的质量上来讲，那款App实在是菜的不能再菜了，后面在一位学姐的的介绍下进入另外一家公司，从事docker方面的一家创业型小公司，我也又开始做后台开发，其实之前<code>JavaWeb</code>的基础还是停留在<code>servlet，jsp</code>顶多能看得懂点<code>struts，hibernate，spring</code>的地步。进入公司后短时间内还是了解以及学习到了很多的新东西，有的是之前听过的，有的是之前根本没有听过的。<code>spring boot，vuejs，docker，k8s，spring cloud，微服务架构</code>还有很多项目开发中用到的工具<code>gitlab，jira</code>等等，对于我这种认知还是停留在jsp的人来说，接收到了很多的新东西（其实慢慢的也发现很多很新潮的东西、技术，其实归根结底还是那些最基础的东西：数据结构，数据库原理这些东西），在这个公司已经4个月了，但是长进好像并没有想象中的那么快，也可能是我太着急了。所以做下总结，已经对下一阶段的安排</p>
-        <!-- 
-时光荏苒，我已不再是还可以在大学校园里可以半夜上网到2点，第二天一觉睡到中午，点个外卖，吃了就去球馆打球的大学生了，还有四个月，就要彻底离开大学校园，虽然已经离校实习了将近8个多月，但是真正要毕业和未毕业还是差距挺大的。废话太多了，进入正题吧
-
-去年7月开始实习，做安卓开发，主要的技术栈也是Java。做了4个月的安卓开发，也独立开发出了一款国家电网内部使用的app，算是大学中第一个稍微拿的......  -->
-        <p class="article-more-link">
-          <a href="/2017/03/05/毕业前的目标及安排/#more">Read More</a>
-        </p>
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-<!-- Table of Contents -->
-
-  
-    <article id="post-百度云全速下载---Aria2"  class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2017/03/01/百度云全速下载---Aria2/">百度云全速下载教程---Aria2</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      
-	<a href="/2017/03/01/百度云全速下载---Aria2/" class="article-date">
-	  <time datetime="2017-02-28T16:00:00.000Z" itemprop="datePublished">2017-03-01</time>
-	</a>
-
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>###百度云全速下载教程</p>
-<blockquote>
-<p>不知道各位平时有没有使用百度云下载但是被百度元下载时的限速气的不行的体验，今天就是在这里教大家如何科学的使用aria2来下载百度云的资源</p>
-</blockquote>
-<p>Aria2是一个轻量级的下载工具，支持http，https，ftp，sftp，bittorrent，metalink等多种协议，能够在windows，linux，macos甚至是Android上面运行。<br>Aria2有两种下载模式：</p>
-        <!-- ###百度云全速下载教程
-
-不知道各位平时有没有使用百度云下载但是被百度元下载时的限速气的不行的体验，今天就是在这里教大家如何科学的使用aria2来下载百度云的资源
-
-Aria2是一个轻量级的下载工具，支持http，https，ftp，sftp，bittorrent，metalink等多种协议，能够在windows，linux，macos甚至是Android上面运行。Aria2有两种下载模式......  -->
-        <p class="article-more-link">
-          <a href="/2017/03/01/百度云全速下载---Aria2/#more">Read More</a>
-        </p>
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-<!-- Table of Contents -->
-
-  
-    <article id="post- 使用GitHub与hexo搭建个人博客"  class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2017/02/25/ 使用GitHub与hexo搭建个人博客/">使用Github和hexo搭建个人博客</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      
-	<a href="/2017/02/25/ 使用GitHub与hexo搭建个人博客/" class="article-date">
-	  <time datetime="2017-02-25T08:41:08.000Z" itemprop="datePublished">2017-02-25</time>
-	</a>
-
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>对于程序员来说，写博客是一个好的习惯，今天给大家介绍一下怎么使用<code>github</code>和<code>hexo</code>来搭建一个博客。</p>
-</blockquote>
-<p>使用github的page服务来搭建博客有几个好处：</p>
-<ol>
-<li>显得比较有geek范儿，跟是用来csdn等博客平台相比，需要一定的动手与折腾能力</li>
-<li>和其他的博客平台相比，可以自己完全控制现实的内容，哪的样式不好看，不喜欢，直接动手改css样式即可，和其他的博客平台满是广告和有点丑爆的界面相比，有一种自己掌控全局的感觉，而不是将自己的东西交给别人托管</li>
-<li>写博客来说毕竟还是要稳定比较好，虽然说自己也可以写一个博客系统或者使用WordPress来搭建一个博客，但是东西放在云服务器上万一哪天忘了续费，或者服务器挂了数据丢失那不是太可惜了。而github博客是把博客内容全放在github上面，至少不会担心数据稳定性的问题。而且借助于git在什么地方，换台电脑使用git 将博客pull下来就能接着写。
-        <!-- 
-对于程序员来说，写博客是一个好的习惯，今天给大家介绍一下怎么使用github和hexo来搭建一个博客。
-
-使用github的page服务来搭建博客有几个好处：
-
-显得比较有geek范儿，跟是用来csdn等博客平台相比，需要一定的动手与折腾能力
-和其他的博客平台相比，可以自己完全控制现实的内容，哪的样式不好看，不喜欢，直接动手改css样式即可，和其他的博客平台满是广告和有点丑爆的界面相比，有......  -->
-        <p class="article-more-link">
-          <a href="/2017/02/25/ 使用GitHub与hexo搭建个人博客/#more">Read More</a>
-        </p>
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-<!-- Table of Contents -->
-
-  
-    <article id="post-Jenkins使用及插件开发介绍"  class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2017/01/02/Jenkins使用及插件开发介绍/">Jenkins使用及插件开发介绍</a>
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Jenkins使用及插件开发介绍
     </h1>
   
 
@@ -503,121 +322,70 @@ Aria2是一个轻量级的下载工具，支持http，https，ftp，sftp，bitto
     </div>
     <footer class="article-footer">
       
-      
-    </footer>
-  </div>
-  
-</article>
-
-<!-- Table of Contents -->
-
-  
-    <article id="post-Android高德地图配置心得"  class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
         
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2016/10/22/Android高德地图配置心得/">Android导入jar和so文件（高德地图配置心得）</a>
-    </h1>
-  
+	<div id="comment">
+	
+	<!-- 多说评论框 start -->
+	 <div class="ds-thread" data-thread-key="/2017/01/02/Jenkins使用及插件开发介绍/" data-title="Jenkins使用及插件开发介绍" data-url="http://yoursite.com/2017/01/02/Jenkins使用及插件开发介绍/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iTimeTraveler"};
+	  (function() {
+	    var ds = document.createElement('script');
+	    ds.type = 'text/javascript';ds.async = true;
+	    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+	    ds.charset = 'UTF-8';
+	    (document.getElementsByTagName('head')[0] 
+	     || document.getElementsByTagName('body')[0]).appendChild(ds);
+	  })();
+	  </script>
+	<!-- 多说公共JS代码 end -->
+	
+	</div>
 
-      </header>
-    
-    <div class="article-meta">
-      
-	<a href="/2016/10/22/Android高德地图配置心得/" class="article-date">
-	  <time datetime="2016-10-21T16:00:00.000Z" itemprop="datePublished">2016-10-22</time>
-	</a>
 
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>最近在项目需要使用地图，学习了一下高德sdk的使用，在配置的过程中遇到了一些问题，记录下来。</p>
-</blockquote>
-<h4 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h4><p>高德地图sdk配置的时候需要导入so文件，由于导入的时候一直没有导入成功，所以一直报<strong><em>No implementation found for long com.autonavi.amap.mapcore.MapCore</em></strong>错误，后面google一下，成功解决了这个问题</p>
-<p>项目中所使用到的高德地图sdk主要分为两个 <strong>定位sdk</strong>　和 <strong>地图sdk</strong> ，<strong>定位sdk</strong>的配置比较简单，直接将jar导入即可。下面简单说下导入jar的步骤吧</p>
-<h4 id="导入jar包的步骤"><a href="#导入jar包的步骤" class="headerlink" title="导入jar包的步骤"></a>导入jar包的步骤</h4><ol>
-<li>将需要导入的jar直接拷贝到app目录下的libs目录中。</li>
-<li>然后再app 的build.gradle中添加依赖即可<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">        compile &apos;com.android.support:support-v4:19.1.0&apos;</div><div class="line">        compile files(&apos;libs/libammsdk.jar&apos;)</div><div class="line">        compile files(&apos;libs/universal-image-loader-1.8.6-with-sources.jar&apos;)</div><div class="line">       compile files(&apos;libs/YoumiSdk_v5.00_2015-01-08.jar&apos;)</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-        <!-- 
-最近在项目需要使用地图，学习了一下高德sdk的使用，在配置的过程中遇到了一些问题，记录下来。
-
-遇到的问题高德地图sdk配置的时候需要导入so文件，由于导入的时候一直没有导入成功，所以一直报No implementation found for long com.autonavi.amap.mapcore.MapCore错误，后面google一下，成功解决了这个问题
-项目中所使用到的高德地......  -->
-        <p class="article-more-link">
-          <a href="/2016/10/22/Android高德地图配置心得/#more">Read More</a>
-        </p>
-      
-    </div>
-    <footer class="article-footer">
       
       
     </footer>
   </div>
   
-</article>
-
-<!-- Table of Contents -->
-
+    
+<nav id="article-nav">
   
-    <article id="post-Java是传值还是传引用"  class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
+    <a href="/2017/02/25/ 使用GitHub与hexo搭建个人博客/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
         
+          使用Github和hexo搭建个人博客
+        
+      </div>
+    </a>
   
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2016/09/22/Java是传值还是传引用/">Java是传值还是传引用</a>
-    </h1>
   
+    <a href="/2016/10/22/Android高德地图配置心得/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Android导入jar和so文件（高德地图配置心得）</div>
+    </a>
+  
+</nav>
 
-      </header>
-    
-    <div class="article-meta">
-      
-	<a href="/2016/09/22/Java是传值还是传引用/" class="article-date">
-	  <time datetime="2016-09-21T16:00:00.000Z" itemprop="datePublished">2016-09-22</time>
-	</a>
-
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h5 id="要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别"><a href="#要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别" class="headerlink" title="要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别"></a>要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> num = <span class="number">10</span>;</div><div class="line">String str = <span class="string">"hello world"</span>;</div><div class="line">Person p = <span class="keyword">new</span> Person();</div></pre></td></tr></table></figure>
-<p>其中num为基本数据类型，而str 和 p 就是引用类型，基本数据类型值就存储在变量中，而引用类型，变量中保存的是实际对象的地址，所以成这种类型为引用类型。引用指向实际地址，而实际地址保存着实际的内容。有点像C语言中的指针。</p>
-        <!-- 要搞懂这个问题，首先还是要先明白基本数据类型和引用数据类型的区别123int num = 10;String str = "hello world";Person p = new Person();
-其中num为基本数据类型，而str 和 p 就是引用类型，基本数据类型值就存储在变量中，而引用类型，变量中保存的是实际对象的地址，所以成这种类型为引用类型。引用指向实际地址，而实际地址保存着实际......  -->
-        <p class="article-more-link">
-          <a href="/2016/09/22/Java是传值还是传引用/#more">Read More</a>
-        </p>
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-    </footer>
-  </div>
   
 </article>
 
 <!-- Table of Contents -->
 
-  
-
-
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Jenkins使用及插件开发介绍"><span class="nav-number">1.</span> <span class="nav-text">Jenkins使用及插件开发介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#介绍"><span class="nav-number">1.1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">1.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用"><span class="nav-number">1.3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#新建项目"><span class="nav-number">1.3.1.</span> <span class="nav-text">新建项目</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#源码配置"><span class="nav-number">1.3.2.</span> <span class="nav-text">源码配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#构建命令"><span class="nav-number">1.3.3.</span> <span class="nav-text">构建命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#构建"><span class="nav-number">1.3.4.</span> <span class="nav-text">构建</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jenkins插件"><span class="nav-number">1.4.</span> <span class="nav-text">jenkins插件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#扩展点"><span class="nav-number">1.4.1.</span> <span class="nav-text">扩展点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Jenkins插件之HelloWorld"><span class="nav-number">1.4.2.</span> <span class="nav-text">Jenkins插件之HelloWorld</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Jenkins中的视图"><span class="nav-number">1.4.3.</span> <span class="nav-text">Jenkins中的视图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Jenkins-数据持久化"><span class="nav-number">1.4.4.</span> <span class="nav-text">Jenkins 数据持久化</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.5.</span> <span class="nav-text">总结</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
 </section>
         
       </div>
-      
-        <div align="center" style="margin-top: 30px;"><hr class="hr" style="margin:0px; height:3px;"></div>
       
       <footer id="footer">
   
@@ -718,6 +486,8 @@ Aria2是一个轻量级的下载工具，支持http，https，ftp，sftp，bitto
   <script src="/js/home.js"></script>
 
 
+
+  <script src="/js/dialog.js"></script>
 
 
 

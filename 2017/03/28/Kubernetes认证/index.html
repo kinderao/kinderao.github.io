@@ -1,42 +1,469 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Kubernetes认证 · Hexo</title><meta name="description" content="Kubernetes认证 - John Doe"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Hexo"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/sunchongsheng" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/pinggod" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Kubernetes认证</h1><div class="post-info">Mar 28, 2017</div><div class="post-content"><h1 id="kubernetes认证"><a href="#kubernetes认证" class="headerlink" title="kubernetes认证"></a>kubernetes认证</h1><blockquote>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>kubernetes认证 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  
+  <meta name="description" content="kubernetes认证
+Kubernetes集群的操作可以通过apiserver来进行操作，kubectl命令最终也是调用的apiserver，如果想要获取对apiserver进行操作，需要先通过其认证
+
+api-server的认证方式：
+
+基本认证：basic-auth–basic-auth-file=/path/to/basic-auth.csv在basic-auth.csv中拥有以列为单位">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes认证">
+<meta property="og:url" content="http://yoursite.com/2017/03/28/Kubernetes认证/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="kubernetes认证
+Kubernetes集群的操作可以通过apiserver来进行操作，kubectl命令最终也是调用的apiserver，如果想要获取对apiserver进行操作，需要先通过其认证
+
+api-server的认证方式：
+
+基本认证：basic-auth–basic-auth-file=/path/to/basic-auth.csv在basic-auth.csv中拥有以列为单位">
+<meta property="og:updated_time" content="2017-04-02T11:58:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kubernetes认证">
+<meta name="twitter:description" content="kubernetes认证
+Kubernetes集群的操作可以通过apiserver来进行操作，kubectl命令最终也是调用的apiserver，如果想要获取对apiserver进行操作，需要先通过其认证
+
+api-server的认证方式：
+
+基本认证：basic-auth–basic-auth-file=/path/to/basic-auth.csv在basic-auth.csv中拥有以列为单位">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  <link rel="icon" href="/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+
+  
+    <link rel="stylesheet" href="/css/dialog.css">
+  
+
+  
+    <link rel="stylesheet" href="/css/header-post.css" >
+  
+
+  
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="124px" height="124px" alt="Hike News" src="/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="/">Home</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/archives">Archives</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/categories">Categories</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/tags">Tags</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/about">About</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-Kubernetes认证" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Kubernetes认证
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/2017/03/28/Kubernetes认证/" class="article-date">
+	  <time datetime="2017-03-28T08:19:54.000Z" itemprop="datePublished">2017-03-28</time>
+	</a>
+
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="kubernetes认证"><a href="#kubernetes认证" class="headerlink" title="kubernetes认证"></a>kubernetes认证</h1><blockquote>
 <p>Kubernetes集群的操作可以通过apiserver来进行操作，kubectl命令最终也是调用的apiserver，如果想要获取对apiserver进行操作，需要先通过其认证</p>
 </blockquote>
 <p>api-server的认证方式：</p>
 <ul>
-<li><p>基本认证：basic-auth</p>
-<p>–basic-auth-file=/path/to/basic-auth.csv<br>在basic-auth.csv中拥有以列为单位的认证信息，格式为password，username，uid</p>
-<p><strong><em>示例：</em></strong></p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">passwd，kinderao，1</div><div class="line">password2，test，2</div></pre></td></tr></table></figure>
-<p>  然后在 kube-apiserver启动的时候加上–basic-auth-file=/path/to/basic-auth.csv这个参数，启动起来过后再在使用k8s的api就需要加上认证信息，否则就会unauthorized，加认证信息的方法是在http请求的header中添加一个Authorization，value是Basic base64编码后的用户名密码信息</p>
+<li><h4 id="基本认证：basic-auth"><a href="#基本认证：basic-auth" class="headerlink" title="基本认证：basic-auth"></a>基本认证：basic-auth</h4><p>–basic-auth-file=/path/to/basic-auth.csv<br>在basic-auth.csv中拥有以列为单位的认证信息，格式为password，username，uid</p>
 </li>
-<li><p>Token认证：token-auth<br> –token-auth-file=/path/to/token-auth.csv<br>在token-auth.csv中拥有以列为单位的认证信息，格式为token，username，uid</p>
-<p>  <strong><em>示例</em></strong></p>
+</ul>
+<a id="more"></a>
+<p>  <strong><em>示例：</em></strong></p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">passwd，kinderao，1</div><div class="line">password2，test，2</div></pre></td></tr></table></figure>
+
+然后在 kube-apiserver启动的时候加上--basic-auth-file=/path/to/basic-auth.csv这个参数，启动起来过后再在使用k8s的api就需要加上认证信息，否则就会unauthorized，加认证信息的方法是在http请求的header中添加一个Authorization，value是Basic base64编码后的用户名密码信息
+</code></pre><ul>
+<li><h4 id="Token认证：token-auth"><a href="#Token认证：token-auth" class="headerlink" title="Token认证：token-auth"></a>Token认证：token-auth</h4><p> –token-auth-file=/path/to/token-auth.csv<br>在token-auth.csv中拥有以列为单位的认证信息，格式为token，username，uid</p>
+<p><strong><em>示例</em></strong></p>
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">token,kinderao,1</div><div class="line">token2,kinderao2,2</div></pre></td></tr></table></figure>
 <p>  同样也是在apiserver的启动参数里面加入–token-auth-file=/path/to/token-auth.csv这个参数，然后在请求的时候同样在header中添加Authorization，value是Bearer token</p>
 </li>
-<li><p>CA证书认证：<br>在使用证书认证之前首先需要申请证书，证书可以通过权威CA来申请，也可以通过自签证书，不过部署kubernetes的大多数环境都是内网环境，所以更多的还是使用的是自签证书。<br>生成证书的步骤如下：</p>
-<ul>
+<li><h4 id="CA证书认证："><a href="#CA证书认证：" class="headerlink" title="CA证书认证："></a>CA证书认证：</h4><p>在使用证书认证之前首先需要申请证书，证书可以通过权威CA来申请，也可以通过自签证书，不过部署kubernetes的大多数环境都是内网环境，所以更多的还是使用的是自签证书。<br>生成证书的步骤如下：</p>
+</li>
+</ul>
+<ol>
 <li><p>首先需要你的linux系统上安装有openssl，大多数的linux发行版都带有这个工具，使用openssl生成根证书cacert：</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 生成密钥</div><div class="line">openssl genrsa -out ca.key 2048</div><div class="line"># 生成根证书</div><div class="line">openssl req -x509 -nodes -key ca.key -subj &quot;/CN=yourcomany.com&quot; -days 5000 -out ca.crt</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 生成密钥</span></div><div class="line">openssl genrsa -out ca.key 2048</div><div class="line"><span class="comment"># 生成根证书</span></div><div class="line">openssl req -x509 -nodes -key ca.key -subj <span class="string">"/CN=yourcomany.com"</span> -days 5000 -out ca.crt</div></pre></td></tr></table></figure>
 </li>
-</ul>
+</ol>
+<ol>
+<li><p>为server生成证书：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 生成server的密钥</span></div><div class="line">openssl genrsa -out server.key 2048</div><div class="line"><span class="comment"># 生成证书申请，其中的hostname需要填入你的服务器的域名或者ip地址，这个地方有个坑</span></div><div class="line"><span class="comment"># 就是在这填入的是什么地址，在client请求的时候就要使用这个地址，之前配的是ip，但是请求的时候使用主机名，导致一直没有出现bad certificate的问题</span></div><div class="line">openssl req -new -key server.key -subj <span class="string">"/CN=`hostname`"</span> -out server.csr</div><div class="line"><span class="comment"># 使用刚才生成的根证书以及密钥来生成server的证书</span></div><div class="line">openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 5000</div></pre></td></tr></table></figure>
 </li>
-</ul>
-<pre><code>- 然后为server生成证书：
-
-    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># 生成server的密钥</div><div class="line">openssl genrsa -out server.key 2048</div><div class="line"># 生成证书申请，其中的hostname需要填入你的服务器的域名或者ip地址，这个地方有个坑</div><div class="line"># 就是在这填入的是什么地址，在client请求的时候就要使用这个地址，之前配的是ip，但是请求的时候使用主机名，导致一直没有出现bad certificate的问题</div><div class="line">openssl req -new -key server.key -subj &quot;/CN=`hostname`&quot; -out server.csr</div><div class="line"># 使用刚才生成的根证书以及密钥来生成server的证书</div><div class="line">openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 5000</div></pre></td></tr></table></figure>
-
-- 再为client生成证书：
-
-    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 生成client的密钥</div><div class="line">openssl genrsa -out client.key 2048</div><div class="line"># 生成证书申请，这里需要填的地址和上面的server一致即可</div><div class="line">openssl req -new -key client.key -subj &quot;/CN=`hostname`&quot; -out client.csr</div><div class="line"># 使用根证书和密钥来生成client的证书</div><div class="line">openssl x509 -req -in client.csr -CA ca.crt -CAcreateserial -out client.crt -days 5000</div></pre></td></tr></table></figure>
-</code></pre><ul>
-<li><p>配置api-server的启动参数<br> 在apiserver的启动参数中加上下面的启动参数</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">--secure-port=443 </div><div class="line">--client_ca_file=/root/genkey/ca.crt </div><div class="line">--tls-private-key-file=/root/genkey/server.key </div><div class="line">--tls-cert-file=/root/genkey/server.crt</div></pre></td></tr></table></figure>
-<p>  也可以放到/etc/kubernets/apiserver配置文件的args参数里面<br>  启动kube-apiserver会看见一下日志：</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">      I0330 05:17:46.582385    4776 config.go:531] Will report 10.0.0.103 as public IP address.</div><div class="line">[restful] 2017/03/30 05:17:46 log.go:30: [restful/swagger] listing is available at https://10.0.0.103:443/swaggerapi/</div><div class="line">[restful] 2017/03/30 05:17:46 log.go:30: [restful/swagger] https://10.0.0.103:443/swaggerui/ is mapped to folder /swagger-ui/</div><div class="line">I0330 05:17:46.950556    4776 serve.go:104] Serving securely on 0.0.0.0:443</div><div class="line">I0330 05:17:46.950618    4776 serve.go:118] Serving insecurely on 127.0.0.1:8080</div></pre></td></tr></table></figure>
-<p>  我们在本机上使用curl来验证一下</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl https://hostname:443 --cacert ca.crt --key client.key --cert client.crt</div></pre></td></tr></table></figure>
-<p>  以后的请求都需要带有根证书和client key和client的证书</p>
+<li><p>再为client生成证书:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 生成client的密钥</span></div><div class="line">openssl genrsa -out client.key 2048</div><div class="line"><span class="comment"># 生成证书申请，这里需要填的地址和上面的server一致即可</span></div><div class="line">openssl req -new -key client.key -subj <span class="string">"/CN=`hostname`"</span> -out client.csr</div><div class="line"><span class="comment"># 使用根证书和密钥来生成client的证书</span></div><div class="line">openssl x509 -req -in client.csr -CA ca.crt -CAcreateserial -out client.crt -days 5000</div></pre></td></tr></table></figure>
 </li>
-</ul>
-</div></article></div></main><footer><div class="paginator"><a href="/2017/03/05/毕业前的目标及安排/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2017 <a href="http://yoursite.com">John Doe</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
+</ol>
+<ol>
+<li><p>配置api-server的启动参数,在apiserver的启动参数中加上下面的启动参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">  --secure-port=443 </div><div class="line">  --client_ca_file=/root/genkey/ca.crt </div><div class="line">  --tls-private-key-file=/root/genkey/server.key </div><div class="line">  --tls-cert-file=/root/genkey/server.crt</div><div class="line">  ```  </div><div class="line"></div><div class="line"></div><div class="line">也可以放到/etc/kubernets/apiserver配置文件的args参数里面    </div><div class="line">启动kube-apiserver会看见一下日志：</div><div class="line">      </div><div class="line">  </div><div class="line">`I0330 05:17:46.582385    4776 config.go:531] Will report 10.0.0.103 as public IP address.</div><div class="line">[restful] 2017/03/30 05:17:46 log.go:30: [restful/swagger] listing is available at https://10.0.0.103:443/swaggerapi/</div><div class="line">[restful] 2017/03/30 05:17:46 log.go:30: [restful/swagger] https://10.0.0.103:443/swaggerui/ is mapped to folder /swagger-ui/</div><div class="line">I0330 05:17:46.950556    4776 serve.go:104] Serving securely on 0.0.0.0:443</div><div class="line">I0330 05:17:46.950618    4776 serve.go:118] Serving insecurely on 127.0.0.1:8080`</div><div class="line"></div><div class="line"></div><div class="line">我们在本机上使用curl来验证一下:</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>curl <a href="https://hostname:443" target="_blank" rel="external">https://hostname:443</a> –cacert ca.crt –key client.key –cert client.crt<br>```</p>
+<p>以后的请求都需要带有根证书和client key和client的证书</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+	<div id="comment">
+	
+	<!-- 多说评论框 start -->
+	 <div class="ds-thread" data-thread-key="/2017/03/28/Kubernetes认证/" data-title="Kubernetes认证" data-url="http://yoursite.com/2017/03/28/Kubernetes认证/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iTimeTraveler"};
+	  (function() {
+	    var ds = document.createElement('script');
+	    ds.type = 'text/javascript';ds.async = true;
+	    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+	    ds.charset = 'UTF-8';
+	    (document.getElementsByTagName('head')[0] 
+	     || document.getElementsByTagName('body')[0]).appendChild(ds);
+	  })();
+	  </script>
+	<!-- 多说公共JS代码 end -->
+	
+	</div>
+
+
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/03/05/毕业前的目标及安排/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">毕业前的目标以及安排</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kubernetes认证"><span class="nav-number">1.</span> <span class="nav-text">kubernetes认证</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本认证：basic-auth"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">基本认证：basic-auth</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Token认证：token-auth"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">Token认证：token-auth</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CA证书认证："><span class="nav-number">1.0.0.3.</span> <span class="nav-text">CA证书认证：</span></a></li></ol></li></ol></li></ol></li></ol>
+    
+    </div>
+  </aside>
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2017 Hexo All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				<span id="busuanzi_container_site_uv"> UV : <span id="busuanzi_value_site_uv"></span></span> |  
+				<span id="busuanzi_container_site_pv"> PV : <span id="busuanzi_value_site_pv"></span></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+
+
+  <script src="/js/home.js"></script>
+
+
+
+  <script src="/js/dialog.js"></script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            Hexo
+          </div>
+          <div class="panel-body">
+            Copyright © 2017 John Doe All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+</body>
+</html>
