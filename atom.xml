@@ -261,7 +261,7 @@
     <link href="http://yoursite.com/2017/01/02/Jenkins%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91%E4%BB%8B%E7%BB%8D/"/>
     <id>http://yoursite.com/2017/01/02/Jenkins使用及插件开发介绍/</id>
     <published>2017-01-01T16:00:00.000Z</published>
-    <updated>2017-04-03T12:20:44.000Z</updated>
+    <updated>2017-04-03T12:23:16.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="Jenkins使用及插件开发介绍"><a href="#Jenkins使用及插件开发介绍" class="headerlink" title="Jenkins使用及插件开发介绍"></a>Jenkins使用及插件开发介绍</h3><h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>Jenkins是一个广泛用于<a href="">持续构建</a>的可视化web工具，就是各种项目的的“自动化”编译、打包、分发部署，将以前编译、打包、上传、部署到Tomcat中的过程交由Jenkins，Jenkins通过给定的代码地址，将代码拉取到jenkins宿主机上，进行编译、打包和发布到web容器中。Jenkins可以支持多种语言（比如：java、c#、php等等），也兼容ant、maven、gradle等多种第三方构建工具，同时跟git、svn无缝集成，也支持直接与github直接集成。</p>
 <blockquote>
@@ -272,6 +272,7 @@
 </ol>
 <h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -jar jenkins.war</div></pre></td></tr></table></figure>
 <p><code>或者</code>将war放到web容器中，启动web容器</p>
+<a id="more"></a>
 <p>启动war包，会自动将war包解压到～/.jenkins目录下，并且生成一些目录和配置文件，我们在jenkins中配置的job也会保存到这个目录下<br>打开浏览器，输入<a href="localhost:8080" target="_blank" rel="external">localhost:8080</a> 就可以访问到jenkins的web界面了<br><img src="http://ok8j2fjtv.bkt.clouddn.com/oNWFi" alt="Untitled Image"></p>
 <h5 id="新建项目"><a href="#新建项目" class="headerlink" title="新建项目"></a>新建项目</h5><blockquote>
 <p>用个小例子简单示范一下jenkins的使用<br> <img src="http://ok8j2fjtv.bkt.clouddn.com/GRjGo" alt="Untitled Image"></p>
@@ -388,7 +389,15 @@
     
     <summary type="html">
     
-      &lt;h3 id=&quot;Jenkins使用及插件开发介绍&quot;&gt;&lt;a href=&quot;#Jenkins使用及插件开发介绍&quot; class=&quot;headerlink&quot; title=&quot;Jenkins使用及插件开发介绍&quot;&gt;&lt;/a&gt;Jenkins使用及插件开发介绍&lt;/h3&gt;&lt;h4 id=&quot;介绍&quot;&gt;&lt;a hr
+      &lt;h3 id=&quot;Jenkins使用及插件开发介绍&quot;&gt;&lt;a href=&quot;#Jenkins使用及插件开发介绍&quot; class=&quot;headerlink&quot; title=&quot;Jenkins使用及插件开发介绍&quot;&gt;&lt;/a&gt;Jenkins使用及插件开发介绍&lt;/h3&gt;&lt;h4 id=&quot;介绍&quot;&gt;&lt;a href=&quot;#介绍&quot; class=&quot;headerlink&quot; title=&quot;介绍&quot;&gt;&lt;/a&gt;介绍&lt;/h4&gt;&lt;p&gt;Jenkins是一个广泛用于&lt;a href=&quot;&quot;&gt;持续构建&lt;/a&gt;的可视化web工具，就是各种项目的的“自动化”编译、打包、分发部署，将以前编译、打包、上传、部署到Tomcat中的过程交由Jenkins，Jenkins通过给定的代码地址，将代码拉取到jenkins宿主机上，进行编译、打包和发布到web容器中。Jenkins可以支持多种语言（比如：java、c#、php等等），也兼容ant、maven、gradle等多种第三方构建工具，同时跟git、svn无缝集成，也支持直接与github直接集成。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;WiseBuild也是基于jenkins进行的开发，在下面会看到很多和WiseBuild相似的地方&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;安装&quot;&gt;&lt;a href=&quot;#安装&quot; class=&quot;headerlink&quot; title=&quot;安装&quot;&gt;&lt;/a&gt;安装&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;到jenkins官网&lt;a href=&quot;http://jenkins.io/下载war包&quot;&gt;http://jenkins.io/下载war包&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&quot;使用&quot;&gt;&lt;a href=&quot;#使用&quot; class=&quot;headerlink&quot; title=&quot;使用&quot;&gt;&lt;/a&gt;使用&lt;/h4&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;java -jar jenkins.war&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;code&gt;或者&lt;/code&gt;将war放到web容器中，启动web容器&lt;/p&gt;
     
     </summary>
     
