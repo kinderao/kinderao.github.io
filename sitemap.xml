@@ -2,16 +2,51 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http:yanghao.online/2017/01/02/Jenkins%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91%E4%BB%8B%E7%BB%8D/</loc>
+    <loc>http:yanghao.online/about/index.html</loc>
     
-    <lastmod>2017-04-03T12:23:16.000Z</lastmod>
+    <lastmod>2017-04-03T15:25:19.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http:yanghao.online/2017/03/28/Kubernetes%E8%AE%A4%E8%AF%81/</loc>
+    
+    <lastmod>2017-04-03T15:19:43.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http:yanghao.online/tags/index.html</loc>
+    
+    <lastmod>2017-04-03T15:19:19.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http:yanghao.online/categories/index.html</loc>
+    
+    <lastmod>2017-04-03T15:17:07.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http:yanghao.online/2017/03/05/%E6%AF%95%E4%B8%9A%E5%89%8D%E7%9A%84%E7%9B%AE%E6%A0%87%E5%8F%8A%E5%AE%89%E6%8E%92/</loc>
+    
+    <lastmod>2017-04-03T15:02:52.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http:yanghao.online/2017/03/01/%E7%99%BE%E5%BA%A6%E4%BA%91%E5%85%A8%E9%80%9F%E4%B8%8B%E8%BD%BD---Aria2/</loc>
     
-    <lastmod>2017-04-03T12:20:15.000Z</lastmod>
+    <lastmod>2017-04-03T14:28:09.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http:yanghao.online/2017/01/02/Jenkins%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91%E4%BB%8B%E7%BB%8D/</loc>
+    
+    <lastmod>2017-04-03T12:23:16.000Z</lastmod>
     
   </url>
   
@@ -33,20 +68,6 @@
     <loc>http:yanghao.online/2017/02/25/%20%E4%BD%BF%E7%94%A8GitHub%E4%B8%8Ehexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</loc>
     
     <lastmod>2017-04-03T11:30:35.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http:yanghao.online/2017/03/05/%E6%AF%95%E4%B8%9A%E5%89%8D%E7%9A%84%E7%9B%AE%E6%A0%87%E5%8F%8A%E5%AE%89%E6%8E%92/</loc>
-    
-    <lastmod>2017-04-03T11:30:32.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http:yanghao.online/2017/03/28/Kubernetes%E8%AE%A4%E8%AF%81/</loc>
-    
-    <lastmod>2017-04-02T11:58:27.000Z</lastmod>
     
   </url>
   
